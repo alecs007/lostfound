@@ -27,7 +27,7 @@ export default function Hero() {
                 priority
               />
             </div>
-            <Counter end={20021} duration={3000} />
+            <Counter end={370} duration={3000} />
             <p>Cazuri încheiate cu succes</p>
           </div>
         </div>
