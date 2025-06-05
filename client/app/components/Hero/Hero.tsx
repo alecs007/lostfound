@@ -1,5 +1,6 @@
 import styles from "./Hero.module.scss";
 import Image from "next/image";
+import Counter from "../Counter/Counter";
 
 export default function Hero() {
   return (
@@ -22,10 +23,11 @@ export default function Hero() {
                 src="/images/oameni_fericiti.webp"
                 alt="Oameni Fericiti"
                 fill
+                sizes="100%"
                 priority
               />
             </div>
-            <span>20.172</span>
+            <Counter end={20021} duration={3000} />
             <p>Cazuri încheiate cu succes</p>
           </div>
         </div>
