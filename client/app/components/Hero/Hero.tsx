@@ -9,7 +9,9 @@ export default function Hero() {
       </div> */}
       <div className={styles.maincontainer}>
         <div className={styles.text}>
-          <h1>Împreuna redăm speranța</h1>
+          <div className={styles.slogan}>
+            <Image src="/images/slogan.webp" alt="Logo Icon" fill priority />
+          </div>
           <h2>
             Cea mai mare comunitate din România dedicată animalelor și
             obiectelor pierdute
