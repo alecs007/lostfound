@@ -45,6 +45,7 @@
     width: 55%;
     aspect-ratio: 1/1;
     position: relative;
+    transition: transform 0.2s ease-in-out;
   }
   .text {
     text-align: center;
@@ -54,9 +55,13 @@
     opacity: 0.9;
   }
 }
+.category:hover .image {
+  transform: scale(1.05);
+}
 
 @media screen and (max-width: 1200px) {
   .categories {
+    width: clamp(300px, 90%, 600px);
     margin-top: 20px;
   }
   .categoriescontainer {
