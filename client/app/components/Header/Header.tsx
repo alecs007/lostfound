@@ -21,7 +21,9 @@ export default function Header() {
         />
       </div>
       <div className={styles.box}>
-        <button className={styles.button}>Raportează</button>
+        <button className={styles.button}>
+          <span>+ </span> Postează
+        </button>
         <ProfileImage />
       </div>
     </header>
