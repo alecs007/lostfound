@@ -128,16 +128,14 @@ export function refreshToken(req: Request, res: Response) {
         });
         return;
       }
-      const accessToken = generateAccessToken(decoded.userId);
+      const accessToken = generateAccessToken(decoded.id);
       res.json({ accessToken });
     });
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .json({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Internal server error",
-      });
+    res.status(500).json({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Internal server error",
+    });
   }
 }
