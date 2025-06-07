@@ -4,6 +4,7 @@ import styles from "./LoginForm.module.scss";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function LoginForm() {
   const { login, user } = useAuth();
@@ -33,6 +34,14 @@ export default function LoginForm() {
         <div>
           <p>{user.name}</p>
           <p>{user.email}</p>
+          {user.profileImage && (
+            <Image
+              src={user.profileImage}
+              alt="Profile"
+              width={100}
+              height={100}
+            />
+          )}
         </div>
       )}
     </div>
