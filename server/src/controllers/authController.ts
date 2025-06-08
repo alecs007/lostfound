@@ -14,7 +14,7 @@ export async function register(req: Request, res: Response): Promise<void> {
     if (await User.exists({ email })) {
       res.status(409).json({
         code: "EMAIL_EXISTS",
-        message: "User already exists with this email",
+        message: "Email-ul este deja folosit",
       });
       return;
     }
@@ -53,7 +53,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     if (!user) {
       res.status(401).json({
         code: "INVALID_CREDENTIALS",
-        message: "Invalid email or password",
+        message: "Email sau parolă incorecte",
       });
       return;
     }
@@ -62,7 +62,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     if (!isValid) {
       res.status(401).json({
         code: "INVALID_CREDENTIALS",
-        message: "Invalid email or password",
+        message: "Email sau parolă incorecte",
       });
       return;
     }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedRoutes = ["/profile"];
+const publicRoutes = ["/login", "/register"];
 
 export function middleware(request: NextRequest) {
   const isLoggedIn = request.cookies.get("refreshToken")?.value;
@@ -13,9 +14,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  if (publicRoutes.includes(pathname) && isLoggedIn) {
+    const homeUrl = new URL("/", request.url);
+    return NextResponse.redirect(homeUrl);
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
   matcher: ["/profile"],
 };
+///, "/login", "/register"

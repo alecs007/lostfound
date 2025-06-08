@@ -1,5 +1,6 @@
 import styles from "./Header.module.scss";
 import Image from "next/image";
+import Link from "next/link";
 import { ProfileImage } from "../ProfileImage/ProfileImage";
 
 export default function Header() {
@@ -13,12 +14,14 @@ export default function Header() {
           height={28}
           style={{ opacity: 0.75 }}
         />
-        <Image
-          src="/images/lostfound_logo.webp"
-          alt="Logo Icon"
-          width={75}
-          height={45}
-        />
+        <Link href="/" className={styles.logo}>
+          <Image
+            src="/images/lostfound_logo.webp"
+            alt="Logo Icon"
+            width={75}
+            height={45}
+          />
+        </Link>
       </div>
       <div className={styles.box}>
         <button className={styles.button}>

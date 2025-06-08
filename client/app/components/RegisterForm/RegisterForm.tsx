@@ -1,14 +1,17 @@
 "use client";
 
-import styles from "./LoginForm.module.scss";
+import styles from "./RegisterForm.module.scss";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 type FieldErrors = {
+  name?: string;
   email?: string;
   password?: string;
+  confirmPassword?: string;
   general?: string;
 };
 
@@ -19,23 +22,37 @@ type AuthError = {
   errors?: { field: string; message: string }[];
 };
 
-export default function LoginForm() {
-  const { login } = useAuth();
+export default function RegisterForm() {
+  const { register } = useAuth();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
     setLoading(true);
 
-    try {
-      await login(email, password);
+    if (password !== confirmPassword) {
+      setErrors({ confirmPassword: "Parolele nu coincid" });
+      setLoading(false);
+      return;
+    }
 
+    try {
+      await register(name, email, password);
+
+      setName("");
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
+
+      router.push("/");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {
         const error = err as AuthError;
@@ -63,9 +80,27 @@ export default function LoginForm() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.login_form}>
-        <h1>Bine ați venit!</h1>
+      <div className={styles.register_form}>
+        <h1>Creare cont</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.inputbox}>
+            <input
+              type="text"
+              value={name}
+              placeholder="Introduceți numele complet"
+              onChange={(e) => {
+                setName(e.target.value);
+                setErrors({ ...errors, name: undefined, general: undefined });
+              }}
+              className={` ${
+                errors.name || errors.general ? styles.error : ""
+              }`}
+            />
+            {errors.name && (
+              <span className={styles.errormessage}>{errors.name}</span>
+            )}
+          </div>
+
           <div className={styles.inputbox}>
             <input
               type="text"
@@ -83,6 +118,7 @@ export default function LoginForm() {
               <span className={styles.errormessage}>{errors.email}</span>
             )}
           </div>
+
           <div className={styles.inputbox}>
             <input
               type="password"
@@ -104,31 +140,56 @@ export default function LoginForm() {
               <span className={styles.errormessage}>{errors.password}</span>
             )}
           </div>
-          <div className={styles.forgot_password_div}>
-            <p className={styles.forgot_password}>Ai uitat parola?</p>
-            <div className={styles.errorgeneral}>
-              {errors.general && (
-                <>
-                  <Image
-                    src="/icons/error.svg"
-                    alt="Error Icon"
-                    width={15}
-                    height={15}
-                  />
-                  <span>{errors.general}</span>
-                </>
-              )}
-            </div>
+
+          <div className={styles.inputbox}>
+            <input
+              type="password"
+              value={confirmPassword}
+              placeholder="Confirmați parola"
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setErrors({
+                  ...errors,
+                  confirmPassword: undefined,
+                  general: undefined,
+                });
+              }}
+              className={` ${
+                errors.confirmPassword || errors.general ? styles.error : ""
+              }`}
+            />
+            {errors.confirmPassword && (
+              <span className={styles.errormessage}>
+                {errors.confirmPassword}
+              </span>
+            )}
           </div>
+
+          <div className={styles.errorgeneral}>
+            {errors.general && (
+              <>
+                <Image
+                  src="/icons/error.svg"
+                  alt="Error Icon"
+                  width={15}
+                  height={15}
+                />
+                <span>{errors.general}</span>
+              </>
+            )}
+          </div>
+
           <button type="submit" disabled={loading}>
-            {loading ? "Loading..." : "Intră în cont"}
+            {loading ? "Se încarcă..." : "Creează cont"}
           </button>
         </form>
+
         <div className={styles.login_options}>
-          <hr></hr>
-          <p> Sau conectează-te cu </p>
-          <hr></hr>
+          <hr />
+          <p> Sau înregistrează-te cu </p>
+          <hr />
         </div>
+
         <div className={styles.social_login}>
           <div className={styles.social}>
             <Image
@@ -149,19 +210,21 @@ export default function LoginForm() {
             <p>Facebook</p>
           </div>
         </div>
-        <div className={styles.signup}>
+
+        <div className={styles.login}>
           <p>
-            Nu aveți cont?
-            <Link href="/register" className={styles.signup_link}>
-              Creare cont
+            Ai deja un cont?
+            <Link href="/login" className={styles.login_link}>
+              Intră în cont
             </Link>
           </p>
         </div>
       </div>
-      <div className={styles.login_image}>
+
+      <div className={styles.register_image}>
         <Image
-          src="/images/signin_image.avif"
-          alt="Login Image"
+          src="/images/register_image.webp"
+          alt="Register Image"
           fill
           sizes="100%"
           priority
