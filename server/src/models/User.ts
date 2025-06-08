@@ -25,9 +25,10 @@ const userSchema = new Schema<UserDocument>(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
     password: { type: String, required: true },
-    lostfoundID: { type: String, unique: true, required: true },
+    lostfoundID: { type: String, unique: true, required: true, index: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     profileImage: { type: String },
     bio: {
