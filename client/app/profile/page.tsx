@@ -14,6 +14,13 @@ type PasswordErrors = {
   general?: string;
 };
 
+type DeleteAccountErrors = {
+  password?: string;
+  confirmationText?: string;
+  dataSecurityConfirmed?: string;
+  general?: string;
+};
+
 type AuthError = {
   code?: string;
   message?: string;
@@ -22,7 +29,7 @@ type AuthError = {
 };
 
 export default function ProfilePage() {
-  const { user, logout, changePassword } = useAuth();
+  const { user, logout, changePassword, deleteAccount } = useAuth();
   const [activePage, setActivePage] = useState("postari");
   const [passwordChangeActive, setPasswordChangeActive] = useState(false);
   const [deleteAccountActive, setDeleteAccountActive] = useState(false);
@@ -34,13 +41,20 @@ export default function ProfilePage() {
   const [passwordErrors, setPasswordErrors] = useState<PasswordErrors>({});
   const [passwordLoading, setPasswordLoading] = useState(false);
 
+  const [deletePassword, setDeletePassword] = useState("");
+  const [confirmationText, setConfirmationText] = useState("");
+  const [dataSecurityConfirmed, setDataSecurityConfirmed] = useState(false);
+  const [deleteAccountErrors, setDeleteAccountErrors] =
+    useState<DeleteAccountErrors>({});
+  const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
+
   const handleLogout = () => {
     try {
       router.push("/");
       setTimeout(() => {
         logout();
       }, 300);
-      toast.success("Te-ai deconectat cu succes!");
+      toast.success("Te-ai deconectat cu succes");
     } catch (err) {
       console.log(err);
     }
@@ -66,7 +80,6 @@ export default function ProfilePage() {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-
       toast.success("Parola a fost schimbată cu succes!");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {
@@ -90,6 +103,48 @@ export default function ProfilePage() {
       }
     } finally {
       setPasswordLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDeleteAccountErrors({});
+    setDeleteAccountLoading(true);
+
+    try {
+      router.push("/");
+      setTimeout(
+        () =>
+          deleteAccount(
+            deletePassword,
+            confirmationText,
+            dataSecurityConfirmed
+          ),
+        300
+      );
+      toast.success("Contul a fost șters cu succes!");
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null && "message" in err) {
+        const error = err as AuthError;
+
+        if (error.code === "VALIDATION_ERROR" && Array.isArray(error.errors)) {
+          const fieldErrors: DeleteAccountErrors = {};
+          error.errors.forEach(({ field, message }) => {
+            fieldErrors[field as keyof DeleteAccountErrors] = message;
+          });
+          setDeleteAccountErrors(fieldErrors);
+        } else if (error.field && error.message) {
+          setDeleteAccountErrors({ [error.field]: error.message });
+        } else {
+          setDeleteAccountErrors({
+            general: error.message || "A apărut o eroare neașteptată",
+          });
+        }
+      } else {
+        setDeleteAccountErrors({ general: "Eroare necunoscută" });
+      }
+    } finally {
+      setDeleteAccountLoading(false);
     }
   };
 
@@ -180,25 +235,7 @@ export default function ProfilePage() {
             </button>
           </div>
           {activePage === "postari" && (
-            <div
-              style={{
-                fontSize: "1em",
-                fontWeight: "600",
-                color: "var(--blue)",
-                width: "100%",
-                aspectRatio: "12/4",
-                position: "relative",
-              }}
-            >
-              <Image
-                src="/images/empty_user_posts.webp"
-                alt="Empty User Posts Image"
-                style={{ opacity: 0.5 }}
-                fill
-                sizes="100%"
-                priority
-              />
-            </div>
+            <div>Aici vor aparea postarile dumneavoastra</div>
           )}
           {activePage === "setari" && (
             <div className={styles.settings_container}>
@@ -340,7 +377,7 @@ export default function ProfilePage() {
                     height={20}
                   />
                 </div>
-              </div>{" "}
+              </div>
               <div
                 className={styles.settings}
                 style={{
@@ -361,6 +398,114 @@ export default function ProfilePage() {
                     width={20}
                     height={20}
                   />
+                </div>
+                <div
+                  className={`${styles.settingsform} ${
+                    deleteAccountActive ? styles.active : ""
+                  }`}
+                >
+                  <div className={styles.deletewarning}>
+                    <h3>Atenție!</h3>
+                    <p>
+                      Această acțiune va șterge definitiv contul dumneavoastră
+                      și nu poate fi anulată.
+                    </p>
+                  </div>
+                  <form onSubmit={handleDeleteAccount} className={styles.form}>
+                    <div className={styles.inputbox}>
+                      <input
+                        type="password"
+                        placeholder="Introduceți parola pentru confirmare"
+                        value={deletePassword}
+                        onChange={(e) => {
+                          setDeletePassword(e.target.value);
+                          setDeleteAccountErrors({
+                            ...deleteAccountErrors,
+                            password: undefined,
+                            general: undefined,
+                          });
+                        }}
+                        className={
+                          deleteAccountErrors.password ? styles.error : ""
+                        }
+                      />
+                      {deleteAccountErrors.password && (
+                        <span className={styles.errormessage}>
+                          {deleteAccountErrors.password}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.inputbox}>
+                      <input
+                        type="text"
+                        placeholder="Scrieți 'STERGE CONTUL' pentru confirmare"
+                        value={confirmationText}
+                        onChange={(e) => {
+                          setConfirmationText(e.target.value);
+                          setDeleteAccountErrors({
+                            ...deleteAccountErrors,
+                            confirmationText: undefined,
+                            general: undefined,
+                          });
+                        }}
+                        className={
+                          deleteAccountErrors.confirmationText
+                            ? styles.error
+                            : ""
+                        }
+                      />
+                      {deleteAccountErrors.confirmationText && (
+                        <span className={styles.errormessage}>
+                          {deleteAccountErrors.confirmationText}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.checkboxcontainer}>
+                      <label className={styles.checkboxlabel}>
+                        <input
+                          type="checkbox"
+                          checked={dataSecurityConfirmed}
+                          onChange={(e) => {
+                            setDataSecurityConfirmed(e.target.checked);
+                            setDeleteAccountErrors({
+                              ...deleteAccountErrors,
+                              dataSecurityConfirmed: undefined,
+                              general: undefined,
+                            });
+                          }}
+                        />
+                        <p>
+                          Am citit și înțeleg Politica de Securitate a Datelor
+                          și confirm că doresc să îmi șterg contul definitiv.
+                        </p>
+                      </label>
+                      {deleteAccountErrors.dataSecurityConfirmed && (
+                        <span className={styles.errorgeneral}>
+                          &#x26A0; {deleteAccountErrors.dataSecurityConfirmed}
+                        </span>
+                      )}
+                    </div>
+                    {deleteAccountErrors.general && (
+                      <div className={styles.errorgeneral}>
+                        <Image
+                          src="/icons/error.svg"
+                          alt="Error Icon"
+                          width={15}
+                          height={15}
+                        />
+                        <span>{deleteAccountErrors.general}</span>
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={deleteAccountLoading}
+                      className={styles.deleteButton}
+                    >
+                      {deleteAccountLoading
+                        ? "Se șterge..."
+                        : "Șterge contul definitiv"}
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>

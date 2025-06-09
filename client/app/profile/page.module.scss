@@ -78,7 +78,6 @@
       pointer-events: auto;
     }
   }
-
   .tooltip {
     position: absolute;
     top: -18px;
@@ -202,7 +201,7 @@
   font-size: 1.1em;
   input {
     width: 100%;
-    padding: 8px 10px;
+    padding: 9px 10px;
     border: 1px solid #2c3e604f;
     border-radius: 5px;
     color: var(--black);
@@ -267,6 +266,44 @@
 .settingsform.active {
   display: flex;
 }
+.deletewarning {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: rgba(255, 0, 0, 0.7);
+  font-size: 0.8em;
+  font-weight: 500;
+  margin: 10px 0;
+  background: white;
+  h3 {
+    font-size: 1.4em;
+    font-weight: 600;
+  }
+}
+.checkboxcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.checkboxlabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 5px;
+  input {
+    width: 5%;
+    cursor: pointer;
+  }
+  p {
+    font-size: 0.7em;
+    font-weight: 500;
+    color: var(--blue);
+    opacity: 0.8;
+    width: 95%;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .content {
     .name {

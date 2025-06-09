@@ -85,3 +85,48 @@ export const changePassword = async (
     });
   }
 };
+
+export const deleteAccount = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user!.id;
+    const { password } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+      return;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(400).json({
+        code: "VALIDATION_ERROR",
+        message: "Parola este incorectă",
+        errors: [{ field: "password", message: "Parola este incorectă" }],
+      });
+      return;
+    }
+
+    // await Post.deleteMany({ userId: userId });
+    // await Comment.deleteMany({ userId: userId });
+
+    await User.findByIdAndDelete(userId);
+
+    res.json({
+      code: "SUCCESS",
+      message: "Contul a fost șters cu succes",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      code: "SERVER_ERROR",
+      message: "Eroare la ștergerea contului",
+    });
+  }
+};

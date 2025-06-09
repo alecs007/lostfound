@@ -66,3 +66,23 @@ export const changePasswordSchema = z
     message: "Parolele nu se potrivesc",
     path: ["confirmPassword"],
   });
+
+export const deleteAccountSchema = z.object({
+  password: z
+    .string()
+    .trim()
+    .pipe(
+      z.string().min(1, "Parola este obligatorie pentru ștergerea contului")
+    ),
+  confirmationText: z
+    .string()
+    .trim()
+    .pipe(z.string().min(1, "Textul de confirmare este obligatoriu"))
+    .refine((text) => text === "STERGE CONTUL", {
+      message: "Trebuie să introduceți exact 'STERGE CONTUL' pentru confirmare",
+    }),
+  dataSecurityConfirmed: z.boolean().refine((confirmed) => confirmed === true, {
+    message:
+      "Trebuie să confirmați că ați citit Politica de Securitate a Datelor",
+  }),
+});

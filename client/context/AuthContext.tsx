@@ -42,6 +42,11 @@ interface AuthContextType {
     newPassword: string,
     confirmPassword: string
   ) => Promise<void>;
+  deleteAccount: (
+    password: string,
+    confirmationText: string,
+    dataSecurityConfirmed: boolean
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -205,6 +210,46 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return data;
   };
 
+  const deleteAccount = async (
+    password: string,
+    confirmationText: string,
+    dataSecurityConfirmed: boolean
+  ) => {
+    if (!accessToken.current) {
+      throw new Error("Not authenticated");
+    }
+
+    const res = await fetch(`${API_URL}/user/delete-account`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken.current}`,
+      },
+      body: JSON.stringify({
+        password,
+        confirmationText,
+        dataSecurityConfirmed,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const errorObj = {
+        message: data.message || "Account deletion failed",
+        code: data.code || "UNKNOWN_ERROR",
+        errors: data.errors || null,
+        field: data.errors?.[0]?.field || null,
+      };
+      throw errorObj;
+    }
+
+    accessToken.current = null;
+    setUser(null);
+
+    return data;
+  };
+
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
@@ -242,6 +287,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         register,
         logout,
         changePassword,
+        deleteAccount,
         loading,
       }}
     >
