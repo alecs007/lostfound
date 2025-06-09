@@ -3,9 +3,34 @@
 import styles from "./page.module.scss";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    try {
+      router.push("/");
+      setTimeout(() => {
+        logout();
+      }, 200);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (user?.lostfoundID) {
+      navigator.clipboard.writeText(user.lostfoundID);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 5000);
+    }
+  };
+
   return (
     <main className={styles.profile}>
       <div className={styles.container}>
@@ -28,7 +53,12 @@ export default function ProfilePage() {
         </div>
         <div className={styles.info}>
           <p>{user?.email}</p>
-          <div className={styles.id}>ID: {user?.lostfoundID}</div>
+          <div className={styles.id} onClick={handleCopy}>
+            ID: {user?.lostfoundID}
+            <span className={styles.tooltip}>
+              {copied ? "Copiat!" : "Copiază!"}
+            </span>
+          </div>
         </div>
         <div className={styles.membersince}>
           <p>
@@ -57,6 +87,7 @@ export default function ProfilePage() {
               color: "#f57a4e",
               backgroundColor: "transparent",
             }}
+            onClick={handleLogout}
           >
             <Image
               src="/icons/exit.svg"

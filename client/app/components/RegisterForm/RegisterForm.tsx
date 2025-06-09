@@ -46,12 +46,6 @@ export default function RegisterForm() {
 
     try {
       await register(name, email, password);
-
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-
       router.push("/");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {

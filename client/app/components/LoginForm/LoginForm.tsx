@@ -3,6 +3,7 @@
 import styles from "./LoginForm.module.scss";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -26,6 +27,8 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -33,9 +36,7 @@ export default function LoginForm() {
 
     try {
       await login(email, password);
-
-      setEmail("");
-      setPassword("");
+      router.push("/");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {
         const error = err as AuthError;

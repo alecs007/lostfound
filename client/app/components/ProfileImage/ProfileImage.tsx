@@ -17,7 +17,10 @@ export function ProfileImage() {
         alt="User Profile Icon"
         width={33}
         height={33}
-        style={{ borderRadius: "50%" }}
+        style={{
+          borderRadius: "50%",
+          ...(user ? {} : { opacity: 0.7 }),
+        }}
         priority
       />
     </Link>

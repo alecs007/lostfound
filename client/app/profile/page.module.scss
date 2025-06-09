@@ -15,7 +15,10 @@
 .background {
   width: 100%;
   height: 200px;
-  background-color: #f2f2f2;
+  background: url("/images/user_background.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
 }
 .content {
@@ -28,7 +31,7 @@
     align-items: flex-end;
     gap: 20px;
     position: absolute;
-    top: -45px;
+    top: -35px;
     left: 5%;
   }
   .image {
@@ -40,16 +43,19 @@
     }
   }
   .name {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    width: 17ch;
     font-size: 2em;
     font-weight: 500;
     color: var(--blue);
-    margin-bottom: 7px;
-    text-wrap: nowrap;
+    text-wrap: wrap;
   }
 }
 .info {
   width: 100%;
-  padding: 100px 5% 0 5%;
+  padding: 110px 5% 0 5%;
   font-size: clamp(1em, 2vw, 1.2em);
   font-weight: 500;
   color: var(--blue);
@@ -64,6 +70,30 @@
     padding: 3px 10px;
     border: 1px solid #2c3e604f;
     border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    &:hover .tooltip {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  }
+
+  .tooltip {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background-color: var(--yellow);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
   }
 }
 .membersince {
@@ -91,6 +121,7 @@
   border: 1px solid #f57a4e;
   font-size: 16px;
   font-weight: 600;
+  text-wrap: nowrap;
   border-radius: 5px;
   padding: 10px 12px;
   cursor: pointer;
@@ -98,7 +129,7 @@
   transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out,
     color 0.3s ease-in-out;
   img {
-    margin-right: 10px;
+    margin-right: 7px;
   }
 }
 .posts_and_settings {
@@ -114,10 +145,11 @@
   .content {
     .name {
       font-size: 1.5em;
+      height: 60px;
     }
   }
   .info {
-    padding: 70px 5% 0 5%;
+    padding: 80px 5% 0 5%;
   }
   .posts_and_settings {
     position: relative;

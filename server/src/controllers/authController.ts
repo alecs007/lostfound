@@ -32,9 +32,11 @@ export async function register(req: Request, res: Response): Promise<void> {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(201).json({
+    const { password: _, ...safeUser } = user.toObject();
+
+    res.json({
       accessToken,
-      user,
+      user: safeUser,
     });
   } catch (err) {
     console.error(err);
@@ -77,9 +79,11 @@ export async function login(req: Request, res: Response): Promise<void> {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    const { password: _, ...safeUser } = user.toObject();
+
     res.json({
       accessToken,
-      user,
+      user: safeUser,
     });
   } catch (err) {
     console.error(err);
@@ -90,7 +94,7 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 }
 
-export function logout(req: Request, res: Response) {
+export function logout(req: Request, res: Response): void {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     sameSite: "strict",
@@ -99,7 +103,7 @@ export function logout(req: Request, res: Response) {
   res.json({ code: "LOGGED_OUT", message: "Logged out" });
 }
 
-export function refreshToken(req: Request, res: Response) {
+export function refreshToken(req: Request, res: Response): void {
   try {
     const token = req.cookies.refreshToken;
     if (!token) {

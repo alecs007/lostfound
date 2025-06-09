@@ -28,7 +28,7 @@ const userSchema = new Schema<UserDocument>(
       index: true,
     },
     password: { type: String, required: true },
-    lostfoundID: { type: String, unique: true, required: true, index: true },
+    lostfoundID: { type: String, unique: true, required: false, index: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     profileImage: { type: String },
     bio: {
@@ -53,17 +53,28 @@ const userSchema = new Schema<UserDocument>(
 
 userSchema.pre("save", async function (next) {
   const user = this as UserDocument;
-  if (!user.isModified("password")) return next();
-  user.password = await bcrypt.hash(user.password, 10);
-  next();
-});
 
-userSchema.pre("save", function (next) {
-  const user = this as UserDocument;
+  if (user.isNew && !user.lostfoundID) {
+    let unique = false;
+    while (!unique) {
+      const id = generateUserId();
+      const existing = await mongoose.models.User.findOne({ lostfoundID: id });
+      if (!existing) {
+        user.lostfoundID = id;
+        unique = true;
+      }
+    }
+  }
+
   if (!user.profileImage) {
     const encodedName = encodeURIComponent(user.name.trim());
     user.profileImage = `https://ui-avatars.com/api/?name=${encodedName}&background=random&bold=true`;
   }
+
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 10);
+  }
+
   next();
 });
 
@@ -76,21 +87,6 @@ function generateUserId(length = 5) {
   }
   return `#${id}`;
 }
-
-userSchema.pre("save", async function (next) {
-  if (this.isNew && !this.lostfoundID) {
-    let unique = false;
-    while (!unique) {
-      const id = generateUserId();
-      const existing = await mongoose.models.User.findOne({ lostfoundID: id });
-      if (!existing) {
-        this.lostfoundID = id;
-        unique = true;
-      }
-    }
-  }
-  next();
-});
 
 userSchema.methods.validatePassword = function (
   this: UserDocument,
