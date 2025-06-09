@@ -112,16 +112,12 @@ export default function ProfilePage() {
     setDeleteAccountLoading(true);
 
     try {
-      router.push("/");
-      setTimeout(
-        () =>
-          deleteAccount(
-            deletePassword,
-            confirmationText,
-            dataSecurityConfirmed
-          ),
-        300
+      await deleteAccount(
+        deletePassword,
+        confirmationText,
+        dataSecurityConfirmed
       );
+      router.push("/");
       toast.success("Contul a fost șters cu succes!");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {
@@ -515,6 +511,7 @@ export default function ProfilePage() {
                       type="submit"
                       disabled={deleteAccountLoading}
                       className={styles.deleteButton}
+                      style={{ backgroundColor: "rgba(255, 0, 0, 0.8)" }}
                     >
                       {deleteAccountLoading
                         ? "Se șterge..."
