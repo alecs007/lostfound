@@ -236,7 +236,7 @@ export default function ProfilePage() {
                 width: "100%",
                 aspectRatio: "12/4",
                 position: "relative",
-                opacity: "0.7",
+                opacity: "0.5",
               }}
             >
               <Image
@@ -393,7 +393,7 @@ export default function ProfilePage() {
                 className={styles.settings}
                 style={{
                   color: "red",
-                  border: "1px solid rgba(255, 0, 0, 0.5)",
+                  // border: "1px solid rgba(255, 0, 0, 0.5)",
                   opacity: "0.7",
                 }}
               >
