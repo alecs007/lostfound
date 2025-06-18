@@ -71,7 +71,7 @@ export default function SearchInput() {
           height={27}
         />
         <input type="text" placeholder="Perioada" disabled={true} />
-        <div className={styles.select_wrapper} style={{ width: "170px" }}>
+        <div className={styles.select_wrapper} style={{ width: "50%" }}>
           <div
             className={styles.select}
             onClick={() => {
