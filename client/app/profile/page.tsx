@@ -86,6 +86,11 @@ export default function ProfilePage() {
       if (typeof err === "object" && err !== null && "message" in err) {
         const error = err as AuthError;
 
+        if (error.code === "TOO_MANY_REQUESTS") {
+          toast.error(error.message);
+          return;
+        }
+
         if (error.code === "VALIDATION_ERROR" && Array.isArray(error.errors)) {
           const fieldErrors: PasswordErrors = {};
           error.errors.forEach(({ field, message }) => {

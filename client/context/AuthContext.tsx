@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (!res.ok) {
       const errorObj = {
-        message: data.message || "Login failed",
+        message: data.message || data.error || "Login failed",
         code: data.code || "UNKNOWN_ERROR",
         errors: data.errors || null,
         field: data.errors?.[0]?.field || null,
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (!res.ok) {
       const errorObj = {
-        message: data.message || "Registration failed",
+        message: data.message || data.error || "Registration failed",
         code: data.code || "UNKNOWN_ERROR",
         errors: data.errors || null,
         field: data.errors?.[0]?.field || null,
@@ -202,7 +202,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } else {
         accessToken.current = null;
         setUser(null);
-        throw new Error(data.message || "Failed to fetch profile");
+        throw new Error(
+          data.message || data.error || "Failed to fetch profile"
+        );
       }
     },
     [refreshToken]
@@ -230,7 +232,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (!res.ok) {
       const errorObj = {
-        message: data.message || "Password change failed",
+        message: data.message || data.error || "Password change failed",
         code: data.code || "UNKNOWN_ERROR",
         errors: data.errors || null,
         field: data.errors?.[0]?.field || null,
@@ -267,7 +269,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (!res.ok) {
       const errorObj = {
-        message: data.message || "Account deletion failed",
+        message: data.message || data.error || "Account deletion failed",
         code: data.code || "UNKNOWN_ERROR",
         errors: data.errors || null,
         field: data.errors?.[0]?.field || null,
@@ -294,7 +296,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (!res.ok) {
       const errorObj = {
-        message: data.message || "Resetarea parolei a eșuat",
+        message: data.message || data.error || "Resetarea parolei a eșuat",
         code: data.code || "UNKNOWN_ERROR",
         errors: data.errors || null,
         field: data.errors?.[0]?.field || null,
@@ -319,7 +321,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (!res.ok) {
         const errorObj = {
-          message: data.message || "Resetarea parolei a eșuat",
+          message: data.message || data.error || "Resetarea parolei a eșuat",
           code: data.code || "UNKNOWN_ERROR",
           errors: data.errors || null,
           field: data.errors?.[0]?.field || null,

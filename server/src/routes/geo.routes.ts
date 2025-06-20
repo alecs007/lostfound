@@ -2,20 +2,30 @@ import express, { Request, Response } from "express";
 import axios from "axios";
 import { z } from "zod";
 import redis from "../config/redis";
+import RedisStore, { RedisReply, SendCommandFn } from "rate-limit-redis";
 import rateLimit from "express-rate-limit";
 
 const router = express.Router();
+const sendCommand: SendCommandFn = (commandName, ...args) => {
+  return redis.call(commandName, ...args) as Promise<RedisReply>;
+};
+
 const geoLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 60,
   message: { error: "Prea multe cereri, vă rugăm să încercați mai târziu" },
   standardHeaders: true,
   legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand,
+    prefix: "rl_geo:",
+  }),
 });
+
 router.use(geoLimiter);
 
 const searchSchema = z.object({
-  q: z.string().min(2),
+  q: z.string().min(2).trim().toLowerCase(),
   limit: z
     .string()
     .regex(/^\d+$/)
@@ -28,9 +38,9 @@ const reverseSchema = z.object({
   lon: z.coerce.number().min(20.2).max(29.7),
 });
 
-// router.get("/health", (_req: Request, res: Response) => {
-//   res.json({ status: "ok" });
-// });
+router.get("/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok" });
+});
 
 router.get("/search", async (req: Request, res: Response): Promise<void> => {
   try {

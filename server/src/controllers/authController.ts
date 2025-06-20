@@ -8,7 +8,6 @@ import {
   generateRefreshToken,
 } from "../utils/generateToken";
 import emailService from "../services/emailService";
-import { error } from "console";
 
 export async function register(req: Request, res: Response): Promise<void> {
   try {

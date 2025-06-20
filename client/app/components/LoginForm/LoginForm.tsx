@@ -43,6 +43,11 @@ export default function LoginForm() {
       if (typeof err === "object" && err !== null && "message" in err) {
         const error = err as AuthError;
 
+        if (error.code === "TOO_MANY_LOGIN_ATTEMPTS") {
+          toast.error(error.message);
+          return;
+        }
+
         if (error.code === "VALIDATION_ERROR" && Array.isArray(error.errors)) {
           const fieldErrors: FieldErrors = {};
           error.errors.forEach(({ field, message }) => {

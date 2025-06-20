@@ -4,6 +4,7 @@ import styles from "./RegisterForm.module.scss";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -51,6 +52,11 @@ export default function RegisterForm() {
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {
         const error = err as AuthError;
+
+        if (error.code === "TOO_MANY_REGISTRATION_ATTEMPTS") {
+          toast.error(error.message);
+          return;
+        }
 
         if (error.code === "VALIDATION_ERROR" && Array.isArray(error.errors)) {
           const fieldErrors: FieldErrors = {};
