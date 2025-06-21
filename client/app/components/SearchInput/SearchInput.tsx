@@ -255,10 +255,7 @@ export default function SearchInput() {
         <div className={styles.select_wrapper} ref={distanceSelectRef}>
           <div
             className={styles.select}
-            onClick={() => {
-              setDistanceOpen(!distanceOpen);
-              setPeriodOpen(false);
-            }}
+            onClick={() => setDistanceOpen(!distanceOpen)}
           >
             <div className={styles.selected}>
               <p> + {distanceSelected} km </p>
@@ -269,10 +266,7 @@ export default function SearchInput() {
                 {distanceOptions.map((opt) => (
                   <li
                     key={opt}
-                    onClick={() => {
-                      setDistanceSelected(opt);
-                      setDistanceOpen(false);
-                    }}
+                    onClick={() => setDistanceSelected(opt)}
                     className={`${
                       opt === distanceSelected ? styles.selectedoption : ""
                     }`}
