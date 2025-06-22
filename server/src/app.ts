@@ -5,6 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import { handleMulterError } from "./middleware/errorHandler";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import geoRoutes from "./routes/geo.routes";
@@ -25,5 +26,7 @@ app.use(`${config.BASE_PATH}/auth`, authRoutes);
 app.use(`${config.BASE_PATH}/user`, userRoutes);
 app.use(`${config.BASE_PATH}/geo`, geoRoutes);
 app.use(`${config.BASE_PATH}/post`, postRoutes);
+
+app.use(handleMulterError);
 
 export default app;

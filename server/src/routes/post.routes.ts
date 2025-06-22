@@ -59,7 +59,7 @@ const upload = multer({
 
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.mimetype)) {
-      cb(new Error("Formatele acceptate sunt: JPEG, PNG, WebP"));
+      cb(new Error("Formatele acceptate sunt: JPEG, JPG, PNG, WebP"));
       return;
     }
 
