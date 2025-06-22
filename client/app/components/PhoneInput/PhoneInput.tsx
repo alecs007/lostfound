@@ -102,7 +102,7 @@ export default function PhoneInput({
 
   useEffect(() => {
     if (phoneNumber.trim()) {
-      const fullPhoneNumber = `${selectedCountry.prefix} ${phoneNumber}`;
+      const fullPhoneNumber = `${selectedCountry.prefix}${phoneNumber}`;
       onPhoneChange(fullPhoneNumber);
     } else {
       onPhoneChange(null);

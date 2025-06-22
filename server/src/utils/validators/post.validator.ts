@@ -70,7 +70,7 @@ export const createPostSchema = z.object({
         .string()
         .regex(
           /^[+]?[0-9\s\-()]+$/,
-          "Numărul de telefon conține caractere nevalide"
+          "Numărul de telefon conține caractere invalide"
         )
     ),
   category: z

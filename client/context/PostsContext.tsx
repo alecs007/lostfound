@@ -11,6 +11,34 @@ import { useAuth } from "./AuthContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+interface Post {
+  _id: string;
+  author: string;
+  lostfoundID: string;
+  title: string;
+  content: string;
+  tags?: string[];
+  images: string[];
+  status: "found" | "lost" | "solved";
+  name: string;
+  email: string;
+  phone: string;
+  category: string;
+  lastSeen?: Date;
+  location: string;
+  locationCoordinates: { type: "Point"; coordinates: [number, number] };
+  circleRadius: number;
+  promoted: {
+    isActive: boolean;
+    expiresAt?: Date;
+  };
+  reward?: number;
+  comments: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
 interface CreatePostData {
   author: string;
   title: string;
@@ -32,33 +60,7 @@ interface CreatePostData {
 interface CreatePostResponse {
   code: string;
   message: string;
-  post: {
-    _id: string;
-    author: string;
-    lostfoundID: string;
-    title: string;
-    content: string;
-    tags?: string[];
-    images: string[];
-    status: "found" | "lost" | "solved";
-    name: string;
-    email: string;
-    phone: string;
-    category: string;
-    lastSeen?: Date;
-    location: string;
-    locationCoordinates: { type: "Point"; coordinates: [number, number] };
-    circleRadius: number;
-    promoted: {
-      isActive: boolean;
-      expiresAt?: Date;
-    };
-    reward?: number;
-    comments: string[];
-    createdAt: Date;
-    updatedAt: Date;
-    __v: number;
-  };
+  post: Post;
   uploadedImages: number;
 }
 
@@ -69,12 +71,14 @@ interface PostsProviderProps {
 interface PostsContextType {
   createPost: (postData: CreatePostData) => Promise<CreatePostResponse>;
   loading: boolean;
+  createdPost: Post | null;
 }
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined);
 
 export const PostsProvider = ({ children }: PostsProviderProps) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [createdPost, setCreatedPost] = useState<Post | null>(null);
   const { accessToken: token } = useAuth();
 
   const createPost = useCallback(
@@ -138,6 +142,7 @@ export const PostsProvider = ({ children }: PostsProviderProps) => {
           throw errorObj;
         }
 
+        setCreatedPost(responseData.post);
         return responseData;
       } catch (error: unknown) {
         setLoading(false);
@@ -153,6 +158,7 @@ export const PostsProvider = ({ children }: PostsProviderProps) => {
       value={{
         createPost,
         loading,
+        createdPost,
       }}
     >
       {children}

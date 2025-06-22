@@ -41,7 +41,7 @@ type PostError = {
 
 export default function CreatePostForm() {
   const { user, loading: authLoading } = useAuth();
-  const { createPost, loading: postLoading } = usePosts();
+  const { createPost, loading: postLoading, createdPost } = usePosts();
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -119,7 +119,7 @@ export default function CreatePostForm() {
       newErrors.email = "Adresa de email nu este validă";
     }
 
-    const phoneRegex = /^\+\d{1,4}\s\d{4,}$/;
+    const phoneRegex = /^\+\d{1,4}\s?\d{4,}$/;
     if (!phone || phone.trim() === "") {
       newErrors.phone = "Numărul de telefon este obligatoriu";
     } else if (!phoneRegex.test(phone)) {
@@ -239,6 +239,12 @@ export default function CreatePostForm() {
         {user && (
           <div className={styles.userdata}>
             <h2>Date de contact</h2>
+            {createdPost && (
+              <p style={{ color: "red", backgroundColor: "yellow" }}>
+                {createdPost.name} {createdPost.email} {createdPost.phone}{" "}
+                {createdPost._id}
+              </p>
+            )}
             <div className={styles.userdataform}>
               <div className={styles.inputbox}>
                 <p>
