@@ -1,0 +1,50 @@
+.successpage {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  width: clamp(300px, 90%, 1300px);
+  min-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  h1 {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 800;
+    color: var(--blue);
+    text-align: center;
+    width: 17ch;
+  }
+  p {
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--blue);
+    opacity: 0.8;
+    text-align: center;
+    width: 40ch;
+  }
+  a {
+    color: var(--yellow);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+.image {
+  position: relative;
+  width: clamp(100px, 35%, 150px);
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  margin-bottom: 1em;
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    p {
+      width: 25ch;
+    }
+  }
+}

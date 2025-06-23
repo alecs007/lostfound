@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 100px;
+  padding: 100px 0;
 }
 .container {
   width: clamp(300px, 90%, 1300px);
@@ -62,9 +62,6 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .success {
-    margin-top: 90px;
-  }
   .container {
     flex-direction: column;
     justify-content: flex-start;

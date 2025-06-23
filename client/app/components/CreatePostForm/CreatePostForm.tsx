@@ -2,6 +2,7 @@
 
 import styles from "./CreatePostForm.module.scss";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
 import Image from "next/image";
@@ -44,6 +45,7 @@ type PostError = {
 export default function CreatePostForm() {
   const { user, loading: authLoading } = useAuth();
   const { createPost, loading: postLoading } = usePosts();
+  const router = useRouter();
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -192,11 +194,10 @@ export default function CreatePostForm() {
       };
 
       const result = await createPost(postData);
-      sessionStorage.setItem(
-        "createdPostID",
-        JSON.stringify(result.post.lostfoundID)
-      );
+      sessionStorage.setItem("createdPostID", result.post.lostfoundID);
       toast.success("Postarea a fost creată cu succes!");
+
+      router.push("/create-post/success");
 
       // Reset form or redirect
       // router.push('/posts/' + result.post._id);
