@@ -140,15 +140,14 @@ export default function ResetPasswordPage() {
             )}
           </div>
 
+          <button type="submit" disabled={loading}>
+            {loading ? "Se procesează..." : "Resetare parolă"}
+          </button>
           {errors.general && (
             <div className={styles.errorgeneral}>
               <span>&#x26A0; {errors.general}</span>
             </div>
           )}
-
-          <button type="submit" disabled={loading}>
-            {loading ? "Se procesează..." : "Resetare parolă"}
-          </button>
         </form>
       </div>
     </main>

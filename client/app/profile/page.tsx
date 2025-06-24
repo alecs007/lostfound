@@ -377,7 +377,7 @@ export default function ProfilePage() {
               </div>
               <div className={styles.settings}>
                 <div className={styles.settingstext}>
-                  Securitatea datelor
+                  Politica de confidențialitate
                   <Image
                     src="/icons/arrow-right.svg"
                     alt="Arrow Right Icon"
