@@ -194,7 +194,7 @@ export default function CreatePostForm() {
       };
 
       const result = await createPost(postData);
-      sessionStorage.setItem("createdPostID", result.post.lostfoundID);
+      sessionStorage.setItem("createdPostID", result.postID);
       toast.success("Postarea a fost creată cu succes!");
 
       router.push("/create-post/success");

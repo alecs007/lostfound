@@ -58,7 +58,7 @@ export async function createPost(req: Request, res: Response): Promise<void> {
     res.status(201).json({
       code: "POST_CREATED",
       message: "Postarea a fost creată cu succes",
-      post: savedPost,
+      postID: savedPost.lostfoundID,
       uploadedImages: uploadedImageUrls.length,
     });
   } catch (error: any) {
