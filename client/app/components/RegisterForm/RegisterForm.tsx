@@ -188,7 +188,7 @@ export default function RegisterForm() {
               height={25}
             />
             <label htmlFor="confirmPassword" className={styles.hidden}>
-              Confirmare parola
+              Confirmare parolă
             </label>
             <input
               type="password"

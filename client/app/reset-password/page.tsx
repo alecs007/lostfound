@@ -89,8 +89,13 @@ export default function ResetPasswordPage() {
               width={25}
               height={25}
             />
+            <label htmlFor="password" className={styles.hidden}>
+              Parola nouă
+            </label>
             <input
               type="password"
+              name="password"
+              id="password"
               placeholder="Parola nouă"
               value={password}
               onChange={(e) => {
@@ -104,6 +109,7 @@ export default function ResetPasswordPage() {
               className={`${
                 errors.password || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.password && (
               <span className={styles.errormessage}>{errors.password}</span>
@@ -117,8 +123,13 @@ export default function ResetPasswordPage() {
               width={25}
               height={25}
             />
+            <label htmlFor="confirmPassword" className={styles.hidden}>
+              Confirmare parolă
+            </label>
             <input
               type="password"
+              name="confirmPassword"
+              id="confirmPassword"
               placeholder="Confirmă parola"
               value={confirmPassword}
               onChange={(e) => {
@@ -132,6 +143,7 @@ export default function ResetPasswordPage() {
               className={`${
                 errors.confirmPassword || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.confirmPassword && (
               <span className={styles.errormessage}>

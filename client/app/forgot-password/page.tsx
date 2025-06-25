@@ -48,11 +48,18 @@ export default function ForgotPassword() {
             width={25}
             height={25}
           />
+          <label htmlFor="email" className={styles.hidden}>
+            Email
+          </label>
           <input
             type="text"
+            name="email"
+            id="email"
+            autoComplete="email"
             placeholder="Introduceți adresa de email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-required="true"
           />
         </div>
         <button onClick={handleEmailSubmit}>
