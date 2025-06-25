@@ -29,6 +29,17 @@ export default function SuccessPage() {
           Pentru orice întrebare, vă rugăm să ne contactați la adresa de email{" "}
           <a href="mailto:suport@lostfound.ro"> suport@lostfound.ro</a>
         </p>
+        <button type="button" className={styles.button}>
+          Promovează postarea
+          <Image
+            src="/icons/arrow-right-white.svg"
+            alt="Pictogramă sageată dreapta"
+            width={23}
+            height={23}
+            priority
+          />
+        </button>
+        <h3>Nu mulțumesc</h3>
       </section>
     </main>
   );

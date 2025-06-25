@@ -35,7 +35,7 @@ export default function ForgotPassword() {
 
   return (
     <main className={styles.forgotpassword}>
-      <div className={styles.container}>
+      <form className={styles.form}>
         <h1>Ai uitat parola?</h1>
         <p>
           Vă rugăm sa introduceți adresa de email asociată contului mai jos. Vă
@@ -62,10 +62,10 @@ export default function ForgotPassword() {
             aria-required="true"
           />
         </div>
-        <button onClick={handleEmailSubmit}>
+        <button onClick={handleEmailSubmit} type="submit" disabled={loading}>
           {loading ? "Se trimite..." : "Trimite"}
         </button>
-      </div>
+      </form>
     </main>
   );
 }
