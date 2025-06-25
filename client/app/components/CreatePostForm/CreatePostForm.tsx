@@ -169,6 +169,10 @@ export default function CreatePostForm() {
       return;
     }
 
+    if (status === "gasit") {
+      setReward("");
+    }
+
     setSubmitting(true);
 
     try {
@@ -345,7 +349,10 @@ export default function CreatePostForm() {
                   <button
                     type="button"
                     className={`${status === "pierdut" && styles.active}`}
-                    onClick={() => setStatus("pierdut")}
+                    onClick={() => {
+                      setStatus("pierdut");
+                      setReward("");
+                    }}
                     style={{ borderRadius: "5px 0 0 5px" }}
                   >
                     Pierdut
@@ -353,7 +360,10 @@ export default function CreatePostForm() {
                   <button
                     type="button"
                     className={`${status === "gasit" && styles.active}`}
-                    onClick={() => setStatus("gasit")}
+                    onClick={() => {
+                      setStatus("gasit");
+                      setReward("");
+                    }}
                     style={{ borderRadius: "0 5px 5px 0" }}
                   >
                     Găsit
@@ -455,46 +465,48 @@ export default function CreatePostForm() {
                   ))}
                 </div>
               </div>
-              <div className={styles.inputbox}>
-                <p>
-                  Recompensă<span className={styles.info}> ( opțional )</span>
-                  <span
-                    className={`${errors.reward ? styles.error : ""} ${
-                      errors.reward && styles.info
-                    }`}
-                    style={{ marginLeft: "10px", opacity: 1 }}
-                  >
-                    {errors.reward}
-                  </span>
-                </p>
-                <label htmlFor="reward" className={styles.hidden}>
-                  Recompensă
-                </label>
-                <input
-                  type="text"
-                  name="reward"
-                  id="reward"
-                  placeholder="Introduceți recompensa ( ex: 100 RON )"
-                  value={reward}
-                  onChange={(e) => {
-                    const onlyNumbers = e.target.value.replace(/\D/g, "");
-                    setReward(onlyNumbers);
-                    clearError("reward");
-                  }}
-                  className={errors.reward ? styles.error : ""}
-                  aria-required="true"
-                />
-                {reward && <span className={styles.ronlabel}>RON</span>}
-                {reward && (
-                  <button
-                    type="button"
-                    onClick={() => setReward("")}
-                    className={styles.clear}
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
+              {status === "pierdut" && (
+                <div className={styles.inputbox}>
+                  <p>
+                    Recompensă<span className={styles.info}> ( opțional )</span>
+                    <span
+                      className={`${errors.reward ? styles.error : ""} ${
+                        errors.reward && styles.info
+                      }`}
+                      style={{ marginLeft: "10px", opacity: 1 }}
+                    >
+                      {errors.reward}
+                    </span>
+                  </p>
+                  <label htmlFor="reward" className={styles.hidden}>
+                    Recompensă
+                  </label>
+                  <input
+                    type="text"
+                    name="reward"
+                    id="reward"
+                    placeholder="Introduceți recompensa ( ex: 100 RON )"
+                    value={reward}
+                    onChange={(e) => {
+                      const onlyNumbers = e.target.value.replace(/\D/g, "");
+                      setReward(onlyNumbers);
+                      clearError("reward");
+                    }}
+                    className={errors.reward ? styles.error : ""}
+                    aria-required="true"
+                  />
+                  {reward && <span className={styles.ronlabel}>RON</span>}
+                  {reward && (
+                    <button
+                      type="button"
+                      onClick={() => setReward("")}
+                      className={styles.clear}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              )}
               <div className={styles.dateinputbox}>
                 <p>
                   {status === "pierdut"

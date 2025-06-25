@@ -74,7 +74,7 @@ export default function UserPosts() {
                 width={16}
                 height={16}
               />
-              <p>{post.views}</p>
+              <p>{post.views.toLocaleString("ro-RO")}</p>
             </div>
             <button type="button">Promovează</button>
           </div>
@@ -134,7 +134,7 @@ export default function UserPosts() {
                   )}
                 </div>
                 <div className={styles.box}>
-                  <p>Status:</p>
+                  <p>Stare:</p>
                   {post.status === "found" && <p>Gasit</p>}
                   {post.status === "lost" && <p>Pierdut</p>}
                   {post.status === "solved" && <p>Rezolvat</p>}
@@ -142,14 +142,16 @@ export default function UserPosts() {
                   <p>Categorie:</p>
                   <p>{post.category}</p>
                 </div>
-                <div className={styles.box}>
-                  <p>Recompensă:</p>
-                  {post.reward ? (
-                    <p>{post.reward} RON</p>
-                  ) : (
-                    <p style={{ marginLeft: "5px" }}>--</p>
-                  )}
-                </div>
+                {post.status === "lost" && (
+                  <div className={styles.box}>
+                    <p>Recompensă:</p>
+                    {post.reward ? (
+                      <p>{post.reward} RON</p>
+                    ) : (
+                      <p style={{ marginLeft: "5px" }}>--</p>
+                    )}
+                  </div>
+                )}
                 <div className={styles.box}>
                   <p>Contact:</p>
                   <p>{post.name}</p>
