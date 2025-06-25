@@ -74,6 +74,8 @@ const postSchema = new Schema<PostDocument>(
 postSchema.index({ title: "text", content: "text", tags: "text" });
 
 // Indexes for filtering and sorting
+postSchema.index({ author: 1 });
+postSchema.index({ category: 1 });
 postSchema.index({ status: 1 });
 postSchema.index({ "promoted.isActive": 1 });
 postSchema.index({ lastSeen: -1 });

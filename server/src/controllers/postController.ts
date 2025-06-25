@@ -1,4 +1,5 @@
 import { Response, Request } from "express";
+import mongoose from "mongoose";
 import Post from "../models/Post";
 import { uploadImageToCloudinary } from "../utils/cloudinary";
 
@@ -96,6 +97,38 @@ export async function createPost(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    res.status(500).json({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Eroare internă de server",
+    });
+  }
+}
+
+export async function getUserPosts(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "User not authenticated",
+      });
+      return;
+    }
+
+    const posts = await Post.find({
+      author: new mongoose.Types.ObjectId(userId),
+    })
+      .select("-__v")
+      .lean();
+
+    res.status(200).json({
+      code: "USER_POSTS",
+      posts,
+      count: posts.length,
+    });
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
     res.status(500).json({
       code: "INTERNAL_SERVER_ERROR",
       message: "Eroare internă de server",

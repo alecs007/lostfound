@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { createPost } from "../controllers/postController";
+import { createPost, getUserPosts } from "../controllers/postController";
 import { validate } from "../middleware/validate";
 import { createPostSchema } from "../utils/validators/post.validator";
 import rateLimit from "express-rate-limit";
@@ -78,5 +78,6 @@ router.post(
   validate(createPostSchema),
   createPost
 );
+router.get("/user-posts", authenticate, postGeneralLimiter, getUserPosts);
 
 export default router;

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader/Loader";
+import UserPosts from "../components/UserPosts/UserPosts";
 
 type PasswordErrors = {
   oldPassword?: string;
@@ -238,13 +239,9 @@ export default function ProfilePage() {
               Setări cont
             </button>
           </div>
-          {activePage === "postari" && (
-            <div className={styles.emptyposts}>
-              Aici vor apărea postările dumneavoastră
-            </div>
-          )}
+          {activePage === "postari" && <UserPosts />}
           {activePage === "setari" && (
-            <div className={styles.settings_container}>
+            <section className={styles.settings_container}>
               <div className={styles.settings}>
                 <div
                   className={styles.settingstext}
@@ -560,7 +557,7 @@ export default function ProfilePage() {
                   </form>
                 </div>
               </div>
-            </div>
+            </section>
           )}
         </div>
       </section>

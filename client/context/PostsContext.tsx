@@ -11,34 +11,34 @@ import { useAuth } from "./AuthContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// interface Post {
-//   _id: string;
-//   author: string;
-//   lostfoundID: string;
-//   title: string;
-//   content: string;
-//   tags?: string[];
-//   images: string[];
-//   status: "found" | "lost" | "solved";
-//   name: string;
-//   email: string;
-//   phone: string;
-//   category: string;
-//   lastSeen?: Date;
-//   location: string;
-//   locationCoordinates: { type: "Point"; coordinates: [number, number] };
-//   circleRadius: number;
-//   promoted: {
-//     isActive: boolean;
-//     expiresAt?: Date;
-//   };
-//   reward?: number;
-//   views: number;
-//   comments: string[];
-//   createdAt: Date;
-//   updatedAt: Date;
-//   __v: number;
-// }
+interface Post {
+  _id: string;
+  author: string;
+  lostfoundID: string;
+  title: string;
+  content: string;
+  tags?: string[];
+  images: string[];
+  status: "found" | "lost" | "solved";
+  name: string;
+  email: string;
+  phone: string;
+  category: string;
+  lastSeen?: Date;
+  location: string;
+  locationCoordinates: { type: "Point"; coordinates: [number, number] };
+  circleRadius: number;
+  promoted: {
+    isActive: boolean;
+    expiresAt?: Date;
+  };
+  reward?: number;
+  views: number;
+  comments: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
 
 interface CreatePostData {
   author: string;
@@ -71,13 +71,16 @@ interface PostsProviderProps {
 
 interface PostsContextType {
   createPost: (postData: CreatePostData) => Promise<CreatePostResponse>;
+  getUserPosts: () => Promise<void>;
   loading: boolean;
+  userPosts: Post[];
 }
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined);
 
 export const PostsProvider = ({ children }: PostsProviderProps) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
   const { accessToken: token } = useAuth();
 
   const createPost = useCallback(
@@ -151,11 +154,35 @@ export const PostsProvider = ({ children }: PostsProviderProps) => {
     [token]
   );
 
+  const getUserPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/post/user-posts`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch user posts");
+      const responseData = await res.json();
+      setUserPosts(responseData.posts);
+    } catch (error: unknown) {
+      console.error("Error fetching user posts:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
   return (
     <PostsContext.Provider
       value={{
         createPost,
+        getUserPosts,
         loading,
+        userPosts,
       }}
     >
       {children}
