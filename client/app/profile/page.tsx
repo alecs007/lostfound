@@ -279,8 +279,13 @@ export default function ProfilePage() {
                 >
                   <form onSubmit={handlePasswordChange} className={styles.form}>
                     <div className={styles.inputbox}>
+                      <label htmlFor="oldPassword" className={styles.hidden}>
+                        Parola veche
+                      </label>
                       <input
                         type="password"
+                        name="oldPassword"
+                        id="oldPassword"
                         placeholder="Parola veche"
                         value={oldPassword}
                         onChange={(e) => {
@@ -294,6 +299,7 @@ export default function ProfilePage() {
                         className={
                           passwordErrors.oldPassword ? styles.error : ""
                         }
+                        aria-required="true"
                       />
                       {passwordErrors.oldPassword && (
                         <span className={styles.errormessage}>
@@ -302,8 +308,13 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <div className={styles.inputbox}>
+                      <label htmlFor="newPassword" className={styles.hidden}>
+                        Parola nouă
+                      </label>
                       <input
                         type="password"
+                        name="newPassword"
+                        id="newPassword"
                         placeholder="Parola nouă"
                         value={newPassword}
                         onChange={(e) => {
@@ -317,6 +328,7 @@ export default function ProfilePage() {
                         className={
                           passwordErrors.newPassword ? styles.error : ""
                         }
+                        aria-required="true"
                       />
                       {passwordErrors.newPassword && (
                         <span className={styles.errormessage}>
@@ -325,8 +337,16 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <div className={styles.inputbox}>
+                      <label
+                        htmlFor="confirmPassword"
+                        className={styles.hidden}
+                      >
+                        Confirmare parola
+                      </label>
                       <input
                         type="password"
+                        name="confirmPassword"
+                        id="confirmPassword"
                         placeholder="Confirmă parola"
                         value={confirmPassword}
                         onChange={(e) => {
@@ -340,6 +360,7 @@ export default function ProfilePage() {
                         className={
                           passwordErrors.confirmPassword ? styles.error : ""
                         }
+                        aria-required="true"
                       />
                       {passwordErrors.confirmPassword && (
                         <span className={styles.errormessage}>
@@ -432,8 +453,13 @@ export default function ProfilePage() {
                   </div>
                   <form onSubmit={handleDeleteAccount} className={styles.form}>
                     <div className={styles.inputbox}>
+                      <label htmlFor="deletePassword" className={styles.hidden}>
+                        Parola pentru confirmare
+                      </label>
                       <input
                         type="password"
+                        name="deletePassword"
+                        id="deletePassword"
                         placeholder="Introduceți parola pentru confirmare"
                         value={deletePassword}
                         onChange={(e) => {
@@ -447,6 +473,7 @@ export default function ProfilePage() {
                         className={
                           deleteAccountErrors.password ? styles.error : ""
                         }
+                        aria-required="true"
                       />
                       {deleteAccountErrors.password && (
                         <span className={styles.errormessage}>
@@ -455,8 +482,16 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <div className={styles.inputbox}>
+                      <label
+                        htmlFor="confirmationText"
+                        className={styles.hidden}
+                      >
+                        Text de confirmare
+                      </label>
                       <input
                         type="text"
+                        name="confirmationText"
+                        id="confirmationText"
                         placeholder="Scrieți 'STERGE CONTUL' pentru confirmare"
                         value={confirmationText}
                         onChange={(e) => {
@@ -472,6 +507,7 @@ export default function ProfilePage() {
                             ? styles.error
                             : ""
                         }
+                        aria-required="true"
                       />
                       {deleteAccountErrors.confirmationText && (
                         <span className={styles.errormessage}>
@@ -481,8 +517,16 @@ export default function ProfilePage() {
                     </div>
                     <div className={styles.checkboxcontainer}>
                       <label className={styles.checkboxlabel}>
+                        <label
+                          htmlFor="dataSecurityConfirmed"
+                          className={styles.hidden}
+                        >
+                          Confirmare Politica de Confidențialitate
+                        </label>
                         <input
                           type="checkbox"
+                          name="dataSecurityConfirmed"
+                          id="dataSecurityConfirmed"
                           checked={dataSecurityConfirmed}
                           onChange={(e) => {
                             setDataSecurityConfirmed(e.target.checked);
@@ -492,10 +536,11 @@ export default function ProfilePage() {
                               general: undefined,
                             });
                           }}
+                          aria-required="true"
                         />
                         <p>
-                          Am citit și înțeleg Politica de Securitate a Datelor
-                          și confirm că doresc să îmi șterg contul definitiv.
+                          Am citit și înțeleg Politica de Confidențialitate și
+                          confirm că doresc să îmi șterg contul definitiv.
                         </p>
                       </label>
                       {deleteAccountErrors.dataSecurityConfirmed && (

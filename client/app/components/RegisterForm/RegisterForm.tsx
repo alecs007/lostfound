@@ -91,9 +91,15 @@ export default function RegisterForm() {
               width={25}
               height={25}
             />
+            <label htmlFor="name" className={styles.hidden}>
+              Nume
+            </label>
             <input
               type="text"
+              name="name"
+              id="name"
               value={name}
+              autoComplete="true"
               placeholder="Introduceți numele complet"
               onChange={(e) => {
                 setName(e.target.value);
@@ -102,6 +108,7 @@ export default function RegisterForm() {
               className={` ${
                 errors.name || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.name && (
               <span className={styles.errormessage}>{errors.name}</span>
@@ -115,9 +122,15 @@ export default function RegisterForm() {
               width={25}
               height={25}
             />
+            <label htmlFor="email" className={styles.hidden}>
+              Email
+            </label>
             <input
               type="text"
+              name="email"
+              id="email"
               value={email}
+              autoComplete="true"
               placeholder="Introduceți adresa de email"
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -126,6 +139,7 @@ export default function RegisterForm() {
               className={` ${
                 errors.email || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.email && (
               <span className={styles.errormessage}>{errors.email}</span>
@@ -139,8 +153,13 @@ export default function RegisterForm() {
               width={25}
               height={25}
             />
+            <label htmlFor="password" className={styles.hidden}>
+              Parola
+            </label>
             <input
               type="password"
+              name="password"
+              id="password"
               value={password}
               placeholder="Introduceți parola"
               onChange={(e) => {
@@ -154,6 +173,7 @@ export default function RegisterForm() {
               className={` ${
                 errors.password || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.password && (
               <span className={styles.errormessage}>{errors.password}</span>
@@ -167,8 +187,13 @@ export default function RegisterForm() {
               width={25}
               height={25}
             />
+            <label htmlFor="confirmPassword" className={styles.hidden}>
+              Confirmare parola
+            </label>
             <input
               type="password"
+              name="confirmPassword"
+              id="confirmPassword"
               value={confirmPassword}
               placeholder="Confirmați parola"
               onChange={(e) => {
@@ -182,6 +207,7 @@ export default function RegisterForm() {
               className={` ${
                 errors.confirmPassword || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.confirmPassword && (
               <span className={styles.errormessage}>

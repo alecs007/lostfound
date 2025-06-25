@@ -81,9 +81,15 @@ export default function LoginForm() {
               width={25}
               height={25}
             />
+            <label htmlFor="email" className={styles.hidden}>
+              Email
+            </label>
             <input
               type="text"
+              name="email"
+              id="email"
               value={email}
+              autoComplete="email"
               placeholder="Introduceți adresa de email"
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -92,6 +98,7 @@ export default function LoginForm() {
               className={` ${
                 errors.email || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.email && (
               <span className={styles.errormessage}>{errors.email}</span>
@@ -104,8 +111,13 @@ export default function LoginForm() {
               width={25}
               height={25}
             />
+            <label htmlFor="password" className={styles.hidden}>
+              Parola
+            </label>
             <input
               type="password"
+              name="password"
+              id="password"
               value={password}
               placeholder="Introduceți parola"
               onChange={(e) => {
@@ -119,6 +131,7 @@ export default function LoginForm() {
               className={` ${
                 errors.password || errors.general ? styles.error : ""
               }`}
+              aria-required="true"
             />
             {errors.password && (
               <span className={styles.errormessage}>{errors.password}</span>

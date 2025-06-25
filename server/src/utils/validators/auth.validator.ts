@@ -82,8 +82,7 @@ export const deleteAccountSchema = z.object({
       message: "Trebuie să introduceți exact 'STERGE CONTUL' pentru confirmare",
     }),
   dataSecurityConfirmed: z.boolean().refine((confirmed) => confirmed === true, {
-    message:
-      "Trebuie să confirmați că ați citit Politica de Securitate a Datelor",
+    message: "Trebuie să confirmați că ați citit Politica de Confidențialitate",
   }),
 });
 
