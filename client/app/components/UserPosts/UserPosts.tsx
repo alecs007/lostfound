@@ -9,6 +9,7 @@ import "swiper/scss/navigation";
 import "swiper/scss/pagination";
 import { Pagination } from "swiper/modules";
 import Image from "next/image";
+import Link from "next/link";
 import DeletePostModal from "../DeletePostModal/DeletePostModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -218,6 +219,7 @@ export default function UserPosts() {
                     style={{ borderRight: "1px solid #c4c4c4" }}
                     onClick={() => handleDeleteClick(post)}
                     disabled={loading}
+                    className={styles.button}
                   >
                     Șterge
                     <Image
@@ -227,8 +229,9 @@ export default function UserPosts() {
                       height={14}
                     />
                   </button>
-                  <button
-                    type="button"
+                  <Link
+                    href={`/edit-post/${post._id}`}
+                    className={styles.button}
                     style={{ borderRight: "1px solid #c4c4c4" }}
                   >
                     Editează
@@ -238,8 +241,8 @@ export default function UserPosts() {
                       width={13}
                       height={13}
                     />
-                  </button>
-                  <button type="button">
+                  </Link>
+                  <button type="button" className={styles.button}>
                     Caz rezolvat
                     <Image
                       src="/icons/check.svg"

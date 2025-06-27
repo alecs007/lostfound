@@ -146,6 +146,33 @@ export const createPostSchema = z.object({
   }, z.number().min(0, "Recompensa trebuie să fie pozitivă").max(100000, "Recompensa nu poate depăși 100,000").optional()),
 });
 
+export const editPostSchema = createPostSchema
+  .partial()
+  .omit({ author: true })
+  .extend({
+    imageOperations: z.preprocess(
+      (val) => {
+        if (typeof val === "string") {
+          try {
+            return JSON.parse(val);
+          } catch {
+            return val;
+          }
+        }
+        return val;
+      },
+      z
+        .object({
+          replaceAllImages: z.boolean().optional().default(false),
+          imagesToRemove: z
+            .array(z.string().url("URL-ul imaginii nu este valid"))
+            .optional()
+            .default([]),
+        })
+        .optional()
+    ),
+  });
+
 // export const updatePostSchema = createPostSchema
 //   .partial()
 //   .omit({ author: true });

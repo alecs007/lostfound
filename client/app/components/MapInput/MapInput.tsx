@@ -50,6 +50,7 @@ interface MapLocationInputProps {
   onLocationChange: (location: LocationData | null) => void;
   errors?: string;
   clearError: (field: keyof FieldErrors) => void;
+  initialLocation?: LocationData | null;
 }
 
 function ClickableMap({
@@ -72,6 +73,7 @@ export default function MapInput({
   onLocationChange,
   errors,
   clearError,
+  initialLocation,
 }: MapLocationInputProps) {
   const [locationQuery, setLocationQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -88,6 +90,23 @@ export default function MapInput({
   const mapRef = useRef<L.Map>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const radiusSelectRef = useRef<HTMLDivElement>(null);
+
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (!initializedRef.current && initialLocation) {
+      initializedRef.current = true;
+      const { name, lat, lng, radius } = initialLocation;
+      setMarkerPosition({ lat, lng });
+      setLocationName(name);
+      setLocationQuery(name);
+      setSelectedRadius(radius);
+      setHasSelected(true);
+      if (mapRef.current) {
+        mapRef.current.setView([lat, lng], 12);
+      }
+    }
+  }, [initialLocation]);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (

@@ -58,6 +58,28 @@ interface CreatePostData {
   images: File[];
 }
 
+interface EditPostData extends Partial<Omit<CreatePostData, "images">> {
+  author: string;
+  title: string;
+  content: string;
+  tags?: string[];
+  status: "found" | "lost" | "solved";
+  name: string;
+  email: string;
+  phone: string;
+  category: string;
+  lastSeen?: Date;
+  location: string;
+  locationCoordinates: { type: "Point"; coordinates: [number, number] };
+  circleRadius: number;
+  reward?: number;
+  images?: File[];
+  imageOperations?: {
+    replaceAllImages?: boolean;
+    imagesToRemove?: string[];
+  };
+}
+
 interface CreatePostResponse {
   code: string;
   message: string;
@@ -65,9 +87,23 @@ interface CreatePostResponse {
   uploadedImages: number;
 }
 
+interface EditPostResponse {
+  code: string;
+  message: string;
+  post: Post;
+  imagesAdded: number;
+  imagesRemoved: number;
+}
+
 interface DeletePostResponse {
   code: string;
   message: string;
+}
+
+interface GetPostByIDResponse {
+  code: string;
+  message: string;
+  post: Post;
 }
 
 interface PostsProviderProps {
@@ -78,6 +114,8 @@ interface PostsContextType {
   createPost: (postData: CreatePostData) => Promise<CreatePostResponse>;
   getUserPosts: () => Promise<void>;
   deletePost: (postID: string) => Promise<DeletePostResponse>;
+  editPost: (id: string, data: EditPostData) => Promise<EditPostResponse>;
+  getPostByID: (postID: string) => Promise<GetPostByIDResponse>;
   loading: boolean;
   setUserPosts: (posts: Post[]) => void;
   userPosts: Post[];
@@ -223,12 +261,118 @@ export const PostsProvider = ({ children }: PostsProviderProps) => {
     [token]
   );
 
+  const editPost = useCallback(
+    async (
+      postId: string,
+      postData: EditPostData
+    ): Promise<EditPostResponse> => {
+      setLoading(true);
+
+      try {
+        const formData = new FormData();
+
+        formData.append("author", postData.author);
+        formData.append("title", postData.title);
+        formData.append("content", postData.content);
+        formData.append("status", postData.status);
+        formData.append("name", postData.name);
+        formData.append("email", postData.email);
+        formData.append("phone", postData.phone);
+        formData.append("category", postData.category);
+        formData.append("location", postData.location);
+        formData.append(
+          "locationCoordinates",
+          JSON.stringify(postData.locationCoordinates)
+        );
+        formData.append("circleRadius", postData.circleRadius.toString());
+
+        if (postData.tags) {
+          formData.append("tags", JSON.stringify(postData.tags));
+        }
+        if (postData.lastSeen) {
+          formData.append("lastSeen", postData.lastSeen.toISOString());
+        }
+        if (postData.reward) {
+          formData.append("reward", postData.reward.toString());
+        } else {
+          formData.append("reward", "");
+        }
+
+        postData.images?.forEach((image: File) => {
+          formData.append("images", image);
+        });
+
+        if (postData.imageOperations) {
+          formData.append(
+            "imageOperations",
+            JSON.stringify(postData.imageOperations)
+          );
+        }
+        console.log(postData);
+        const res = await fetch(`${API_URL}/post/edit/${postId}`, {
+          method: "PUT",
+          credentials: "include",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+
+        const responseData = await res.json();
+        if (!res.ok) {
+          const errorObj = {
+            message:
+              responseData.message ||
+              responseData.error ||
+              "Editarea postării a eșuat",
+            code: responseData.code || "UNKNOWN_ERROR",
+            errors: responseData.errors || null,
+            field: responseData.errors?.[0]?.field || null,
+          };
+          throw errorObj;
+        }
+
+        setUserPosts((prev) =>
+          prev.map((p) => (p._id === postId ? responseData.post : p))
+        );
+
+        return responseData;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [token]
+  );
+
+  const getPostByID = useCallback(async (postId: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/post/${postId}`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const responseData = await res.json();
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch post");
+      }
+
+      return responseData;
+    } catch (error: unknown) {
+      console.error("Error fetching post:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return (
     <PostsContext.Provider
       value={{
         createPost,
         getUserPosts,
         deletePost,
+        editPost,
+        getPostByID,
         loading,
         setUserPosts,
         userPosts,

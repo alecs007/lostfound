@@ -67,12 +67,14 @@ interface PhoneInputProps {
   onPhoneChange: (phone: string | null) => void;
   errors?: string;
   clearError: (field: keyof FieldErrors) => void;
+  initialPhone?: string | null;
 }
 
 export default function PhoneInput({
   onPhoneChange,
   errors,
   clearError,
+  initialPhone,
 }: PhoneInputProps) {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(
     countryCodes[0]
@@ -83,6 +85,20 @@ export default function PhoneInput({
     useState<CountryCode[]>(countryCodes);
 
   const countryDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialPhone) {
+      const matchingCountry = countryCodes.find((c) =>
+        initialPhone.startsWith(c.prefix)
+      );
+      if (matchingCountry) {
+        setSelectedCountry(matchingCountry);
+        setPhoneNumber(initialPhone.replace(matchingCountry.prefix, ""));
+      } else {
+        setPhoneNumber(initialPhone);
+      }
+    }
+  }, [initialPhone]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {

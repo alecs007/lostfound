@@ -4,9 +4,14 @@ import {
   createPost,
   getUserPosts,
   deletePost,
+  getPostByID,
+  editPost,
 } from "../controllers/postController";
 import { validate } from "../middleware/validate";
-import { createPostSchema } from "../utils/validators/post.validator";
+import {
+  createPostSchema,
+  editPostSchema,
+} from "../utils/validators/post.validator";
 import rateLimit from "express-rate-limit";
 import RedisStore, { RedisReply, SendCommandFn } from "rate-limit-redis";
 import redis from "../config/redis";
@@ -26,6 +31,16 @@ const createPostLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   store: new RedisStore({ sendCommand, prefix: "rl_create_post:" }),
+});
+
+const editPostLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 20,
+  message: {
+    code: "TOO_MANY_EDIT_ATTEMPTS",
+    message: "Prea multe încercări de editare. Încearcă mai târziu.",
+  },
+  store: new RedisStore({ sendCommand, prefix: "rl_edit_post:" }),
 });
 
 const deletePostLimiter = rateLimit({
@@ -92,7 +107,17 @@ router.post(
   validate(createPostSchema),
   createPost
 );
+router.put(
+  "/edit/:postId",
+  authenticate,
+  editPostLimiter,
+  imageUploadLimiter,
+  upload.array("images", 5),
+  validate(editPostSchema),
+  editPost
+);
 router.get("/user-posts", authenticate, postGeneralLimiter, getUserPosts);
 router.delete("/delete/:postId", authenticate, deletePostLimiter, deletePost);
+router.get("/:postId", postGeneralLimiter, getPostByID);
 
 export default router;

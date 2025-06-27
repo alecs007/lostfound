@@ -206,3 +206,226 @@ export async function deletePost(req: Request, res: Response): Promise<void> {
     });
   }
 }
+
+export async function getPostByID(req: Request, res: Response): Promise<void> {
+  try {
+    const { postId } = req.params;
+
+    if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
+      res.status(400).json({
+        code: "INVALID_POST_ID",
+        message: "ID-ul postării nu este valid",
+      });
+      return;
+    }
+
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      res.status(404).json({
+        code: "POST_NOT_FOUND",
+        message: "Postarea nu a fost găsită",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      code: "POST_FOUND",
+      post,
+    });
+  } catch (error) {
+    console.error("Error fetching post by ID:", error);
+    res.status(500).json({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Eroare internă de server",
+    });
+  }
+}
+
+export async function editPost(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    const { postId } = req.params;
+    const validatedData = req.body;
+
+    if (!userId) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "User not authenticated",
+      });
+      return;
+    }
+
+    if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
+      res.status(400).json({
+        code: "INVALID_POST_ID",
+        message: "ID-ul postării nu este valid",
+      });
+      return;
+    }
+
+    const existingPost = await Post.findOne({
+      _id: new mongoose.Types.ObjectId(postId),
+      author: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!existingPost) {
+      res.status(404).json({
+        code: "POST_NOT_FOUND",
+        message:
+          "Postarea nu a fost găsită sau nu aveți permisiunea să o editați",
+      });
+      return;
+    }
+
+    let finalImageUrls: string[] = [...(existingPost.images || [])];
+    const imagesToDelete: string[] = [];
+
+    if (req.body.imageOperations) {
+      const { imagesToRemove = [], replaceAllImages = false } =
+        req.body.imageOperations;
+
+      if (replaceAllImages) {
+        imagesToDelete.push(...finalImageUrls);
+        finalImageUrls = [];
+      } else if (imagesToRemove && Array.isArray(imagesToRemove)) {
+        imagesToRemove.forEach((imageUrl: string) => {
+          const index = finalImageUrls.indexOf(imageUrl);
+          if (index > -1) {
+            finalImageUrls.splice(index, 1);
+            imagesToDelete.push(imageUrl);
+          }
+        });
+      }
+    }
+
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      try {
+        const uploadPromises = req.files.map(
+          async (file: Express.Multer.File, index: number) => {
+            return uploadImageToCloudinary(
+              file.buffer,
+              file.originalname || `image-${index}`
+            );
+          }
+        );
+
+        const newImageUrls = await Promise.all(uploadPromises);
+        finalImageUrls.push(...newImageUrls);
+      } catch (uploadError) {
+        console.error("Cloudinary upload error:", uploadError);
+        res.status(500).json({
+          code: "IMAGE_UPLOAD_ERROR",
+          message: "Eroare la încărcarea imaginilor noi",
+          errors: [
+            {
+              field: "images",
+              message: "Nu s-au putut încărca imaginile noi",
+            },
+          ],
+        });
+        return;
+      }
+    }
+
+    if (finalImageUrls.length === 0) {
+      res.status(400).json({
+        code: "MISSING_IMAGES",
+        message: "Cel puțin o imagine este obligatorie",
+        errors: [
+          {
+            field: "images",
+            message:
+              "Nu puteți șterge toate imaginile. Cel puțin o imagine este obligatorie",
+          },
+        ],
+      });
+      return;
+    }
+
+    const updateData = {
+      ...validatedData,
+      images: finalImageUrls,
+      updatedAt: new Date(),
+    };
+
+    delete updateData.imageOperations;
+
+    const updatedPost = await Post.findByIdAndUpdate(postId, updateData, {
+      new: true,
+      runValidators: true,
+      select: "-__v",
+    }).lean();
+
+    if (!updatedPost) {
+      res.status(404).json({
+        code: "POST_NOT_FOUND",
+        message: "Postarea nu a fost găsită",
+      });
+      return;
+    }
+
+    if (imagesToDelete.length > 0) {
+      try {
+        const deletePromises = imagesToDelete.map((imageUrl: string) =>
+          deleteImageFromCloudinary(imageUrl)
+        );
+
+        await Promise.allSettled(deletePromises);
+        console.log(
+          `Deleted ${imagesToDelete.length} old images from Cloudinary for post ${postId}`
+        );
+      } catch (cloudinaryError) {
+        console.error(
+          "Error deleting old images from Cloudinary:",
+          cloudinaryError
+        );
+      }
+    }
+
+    res.status(200).json({
+      code: "POST_UPDATED",
+      message: "Postarea a fost actualizată cu succes",
+      post: updatedPost,
+      imagesAdded: req.files ? req.files.length : 0,
+      imagesRemoved: imagesToDelete.length,
+    });
+  } catch (error: any) {
+    console.error("Error updating post:", error);
+
+    if (error.name === "ValidationError") {
+      const errors = Object.entries(error.errors || {}).map(
+        ([field, err]: [string, any]) => ({
+          field,
+          message: err?.message || "Unknown validation error",
+        })
+      );
+
+      res.status(400).json({
+        code: "VALIDATION_ERROR",
+        message: "Datele introduse nu sunt valide",
+        errors: errors,
+      });
+      return;
+    }
+
+    if (error.code === 11000) {
+      res.status(409).json({
+        code: "DUPLICATE_ERROR",
+        message: "Valorile introduse există deja",
+        errors: [
+          {
+            field: Object.keys(error.keyPattern || {})[0] || "unknown",
+            message: "Această valoare există deja",
+          },
+        ],
+      });
+      return;
+    }
+
+    res.status(500).json({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Eroare internă de server",
+    });
+  }
+}
