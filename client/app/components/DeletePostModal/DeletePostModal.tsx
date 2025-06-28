@@ -44,12 +44,10 @@ export default function DeletePostModal({
             <p>&#9888;</p>
             <p>Această acțiune este permanentă și nu poate fi anulată!</p>
           </div>
-
           <div className={styles.postinfo}>
             <p>Postarea care va fi ștearsă:</p>
             <p className={styles.posttitle}>{postTitle}</p>
           </div>
-
           <div className={styles.confirmationsection}>
             <label htmlFor="confirmationinput">
               Pentru a confirma ștergerea, tastați{" "}
@@ -69,8 +67,13 @@ export default function DeletePostModal({
               aria-required="true"
             />
           </div>
+          <div className={styles.postinfo}>
+            <p>
+              A fost de ajutor? Nu șterge postarea – marcheaz-o ca
+              <strong style={{ color: "var(--yellow" }}> rezolvată !</strong>
+            </p>
+          </div>
         </div>
-
         <div className={styles.footer}>
           <button
             className={styles.cancelbutton}

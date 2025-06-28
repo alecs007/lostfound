@@ -219,7 +219,16 @@ export const PostsProvider = ({ children }: PostsProviderProps) => {
 
       if (!res.ok) throw new Error("Failed to fetch user posts");
       const responseData = await res.json();
-      setUserPosts(responseData.posts);
+      const sortedPosts = responseData.posts.sort((a: Post, b: Post) => {
+        if (a.status === "solved" && b.status !== "solved") return 1;
+        if (a.status !== "solved" && b.status === "solved") return -1;
+
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+      setUserPosts(sortedPosts);
     } catch (error: unknown) {
       console.error("Error fetching user posts:", error);
       throw error;

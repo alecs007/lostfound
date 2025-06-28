@@ -48,14 +48,12 @@ export default function MarkSolvedModal({
               width={18}
               height={18}
             />
-            <p>Marchezi definitiv această postare ca rezolvată.</p>
+            <p>Marchezi definitiv această postare ca fiind rezolvată.</p>
           </div>
-
           <div className={styles.postinfo}>
             <p>Postarea:</p>
             <p className={styles.posttitle}>{postTitle}</p>
           </div>
-
           <div className={styles.confirmationsection}>
             <label htmlFor="solveConfirmationInput">
               Pentru a confirma tastați <strong>{requiredText}</strong> mai jos:
@@ -75,7 +73,6 @@ export default function MarkSolvedModal({
             />
           </div>
         </div>
-
         <div className={styles.footer}>
           <button
             className={styles.cancelbutton}
@@ -89,7 +86,7 @@ export default function MarkSolvedModal({
             onClick={handleConfirm}
             disabled={isConfirmDisabled}
           >
-            {isUpdating ? "Se marchează…" : "Confirmă rezolvat"}
+            {isUpdating ? "Se marchează…" : "Confirmă rezolvarea"}
           </button>
         </div>
       </div>
