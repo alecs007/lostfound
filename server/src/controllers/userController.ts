@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import {
+  uploadImageToCloudinary,
+  deleteImageFromCloudinary,
+} from "../utils/cloudinary";
 
 export const getProfile = async (
   req: Request,
@@ -127,6 +131,73 @@ export const deleteAccount = async (
     res.status(500).json({
       code: "SERVER_ERROR",
       message: "Eroare la ștergerea contului",
+    });
+  }
+};
+
+export const changeProfileImage = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user!.id;
+
+    if (!req.file) {
+      res.status(400).json({
+        code: "MISSING_IMAGE",
+        message: "Imaginea de profil este obligatorie",
+        errors: [{ field: "image", message: "Trebuie să încarci o imagine" }],
+      });
+      return;
+    }
+
+    let newImageUrl: string;
+    try {
+      newImageUrl = await uploadImageToCloudinary(
+        req.file.buffer,
+        req.file.originalname || "profile-image"
+      );
+    } catch (err) {
+      console.error("Cloudinary upload error:", err);
+      res.status(500).json({
+        code: "IMAGE_UPLOAD_ERROR",
+        message: "Eroare la încărcarea imaginii",
+      });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ code: "NOT_FOUND", message: "User not found" });
+      return;
+    }
+
+    const oldImageUrl = (user as any).profileImage as string | undefined;
+    (user as any).profileImage = newImageUrl;
+    user.updatedAt = new Date();
+    await user.save();
+
+    if (oldImageUrl) {
+      try {
+        await deleteImageFromCloudinary(oldImageUrl);
+      } catch (cloudErr) {
+        console.error(
+          "Error deleting old profile image from Cloudinary:",
+          cloudErr
+        );
+      }
+    }
+
+    res.json({
+      code: "PROFILE_IMAGE_UPDATED",
+      message: "Imaginea de profil a fost actualizată cu succes",
+      imageUrl: newImageUrl,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      code: "SERVER_ERROR",
+      message: "Eroare la actualizarea imaginii de profil",
     });
   }
 };

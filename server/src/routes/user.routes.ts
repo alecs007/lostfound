@@ -4,6 +4,7 @@ import {
   getProfile,
   changePassword,
   deleteAccount,
+  changeProfileImage,
 } from "../controllers/userController";
 import { validate } from "../middleware/validate";
 import {
@@ -13,6 +14,7 @@ import {
 import rateLimit from "express-rate-limit";
 import RedisStore, { RedisReply, SendCommandFn } from "rate-limit-redis";
 import redis from "../config/redis";
+import multer from "multer";
 
 const sendCommand: SendCommandFn = (commandName, ...args) => {
   return redis.call(commandName, ...args) as Promise<RedisReply>;
@@ -29,10 +31,39 @@ const userLimiter = rateLimit({
   legacyHeaders: false,
   store: new RedisStore({ sendCommand, prefix: "rl_user:" }),
 });
+const profileLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 30,
+  message: {
+    code: "TOO_MANY_REQUESTS",
+    error: "Prea multe cereri. İncearcă mai târziu",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: new RedisStore({ sendCommand, prefix: "rl_profile:" }),
+});
+
+const storage = multer.memoryStorage();
+const imageUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      cb(new Error("Doar fișierele imagine sunt permise"));
+      return;
+    }
+    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!allowed.includes(file.mimetype)) {
+      cb(new Error("Formatele acceptate sunt: JPEG, JPG, PNG, WebP"));
+      return;
+    }
+    cb(null, true);
+  },
+});
 
 const router = express.Router();
 
-router.get("/profile", authenticate, getProfile);
+router.get("/profile", profileLimiter, authenticate, getProfile);
 router.put(
   "/change-password",
   userLimiter,
@@ -46,6 +77,13 @@ router.delete(
   authenticate,
   validate(deleteAccountSchema),
   deleteAccount
+);
+router.put(
+  "/change-profile-image",
+  userLimiter,
+  authenticate,
+  imageUpload.single("image"),
+  changeProfileImage
 );
 
 export default router;

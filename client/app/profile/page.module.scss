@@ -38,8 +38,29 @@
     width: clamp(100px, 10%, 130px);
     aspect-ratio: 1/1;
     position: relative;
-    img {
+    .profileimage {
       border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      object-fit: cover;
+      background-color: var(--white);
+    }
+    .changehint {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--blue);
+      background-color: var(--white);
+      border-radius: 5px;
+      cursor: pointer;
+      opacity: 0.9;
+      z-index: 1000;
+      .changeimg {
+        position: relative;
+        width: 1.5em;
+        aspect-ratio: 1/1;
+      }
     }
   }
   .name {
@@ -62,10 +83,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  opacity: 0.8;
+  opacity: 0.9;
   .id {
     color: var(--blue);
-    opacity: 0.8;
+    opacity: 0.9;
     font-weight: 600;
     padding: 3px 10px;
     border: 1px solid #2c3e604f;
@@ -349,5 +370,13 @@
   }
   .emptyposts {
     height: 150px;
+  }
+  .content {
+    .changehint {
+      .changeimg {
+        width: 1.2em;
+        height: 1.2em;
+      }
+    }
   }
 }

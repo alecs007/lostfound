@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader/Loader";
 import UserPosts from "../components/UserPosts/UserPosts";
+import ProfileImageModal from "../components/ProfileImageModal/ProfileImageModal";
 import { usePosts } from "@/context/PostsContext";
 
 type PasswordErrors = {
@@ -33,7 +34,14 @@ type AuthError = {
 };
 
 export default function ProfilePage() {
-  const { user, logout, changePassword, deleteAccount, loading } = useAuth();
+  const {
+    user,
+    logout,
+    changePassword,
+    deleteAccount,
+    changeProfileImage,
+    loading,
+  } = useAuth();
   const [activePage, setActivePage] = useState("postari");
   const [passwordChangeActive, setPasswordChangeActive] = useState(false);
   const [deleteAccountActive, setDeleteAccountActive] = useState(false);
@@ -175,417 +183,489 @@ export default function ProfilePage() {
     }
   };
 
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+
+  // … existing password + delete account state & handlers …
+
+  // ==============================
+  // Handle avatar‑click -> open modal
+  // ==============================
+  const handleAvatarClick = () => {
+    setImageModalOpen(true);
+  };
+
+  // ==============================
+  // Handle file confirm (upload)
+  // ==============================
+  const handleImageConfirm = async (file: File) => {
+    setImageUploading(true);
+    try {
+      await changeProfileImage(file);
+      toast.success("Imaginea de profil a fost actualizată!");
+    } catch (err: unknown) {
+      const msg =
+        typeof err === "object" && err && "message" in err
+          ? err.message || "Eroare la actualizarea imaginii"
+          : "Eroare la actualizarea imaginii";
+      toast.error(msg as string);
+    } finally {
+      setImageUploading(false);
+      setImageModalOpen(false);
+    }
+  };
+
   if (loading || !user) return <Loader />;
 
   return (
-    <main className={styles.profile}>
-      <section className={styles.container}>
-        <div className={styles.background}></div>
-        <div className={styles.content}>
-          <div className={styles.content_items}>
-            {user?.profileImage && (
-              <div className={styles.image}>
+    <>
+      <main className={styles.profile}>
+        <section className={styles.container}>
+          <div className={styles.background}></div>
+          <div className={styles.content}>
+            <div className={styles.content_items}>
+              {user.profileImage && (
+                <div className={styles.image}>
+                  <Image
+                    src={user.profileImage}
+                    alt="Pictogramă de profil"
+                    fill
+                    sizes="100%"
+                    priority
+                    className={styles.profileimage}
+                  />
+                  <span
+                    className={styles.changehint}
+                    onClick={handleAvatarClick}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ")
+                        handleAvatarClick();
+                    }}
+                  >
+                    <div className={styles.changeimg}>
+                      <Image
+                        src="/icons/edit.svg"
+                        alt="Edit Icon"
+                        fill
+                        sizes="100%"
+                      />
+                    </div>
+                  </span>
+                </div>
+              )}
+              <h1 className={styles.name}>{user?.name}</h1>
+            </div>
+          </div>
+          <div className={styles.info}>
+            <p>{user?.email}</p>
+            <div className={styles.id} onClick={handleCopy}>
+              ID: {user?.lostfoundID}
+              <span className={styles.tooltip}>
+                {copied ? "Copiat!" : "Copiază!"}
+              </span>
+            </div>
+          </div>
+          <div className={styles.membersince}>
+            <p>
+              Membru Lost & Found din {""}
+              {user?.createdAt
+                ? new Date(user.createdAt).toLocaleDateString("ro-RO", {
+                    year: "numeric",
+                    month: "long",
+                  })
+                : ""}
+            </p>
+          </div>
+          <div className={styles.buttoncontainer}>
+            <Link href="/create-post">
+              <button className={styles.button}>
                 <Image
-                  src={user.profileImage}
-                  alt="Pictogramă de profil"
-                  fill
-                  sizes="100%"
-                  priority
+                  src="/icons/add-plus.svg"
+                  alt="Add Post Icon"
+                  width={20}
+                  height={20}
                 />
-              </div>
-            )}
-            <h1 className={styles.name}>{user?.name}</h1>
-          </div>
-        </div>
-        <div className={styles.info}>
-          <p>{user?.email}</p>
-          <div className={styles.id} onClick={handleCopy}>
-            ID: {user?.lostfoundID}
-            <span className={styles.tooltip}>
-              {copied ? "Copiat!" : "Copiază!"}
-            </span>
-          </div>
-        </div>
-        <div className={styles.membersince}>
-          <p>
-            Membru Lost & Found din {""}
-            {user?.createdAt
-              ? new Date(user.createdAt).toLocaleDateString("ro-RO", {
-                  year: "numeric",
-                  month: "long",
-                })
-              : ""}
-          </p>
-        </div>
-        <div className={styles.buttoncontainer}>
-          <Link href="/create-post">
-            <button className={styles.button}>
+                Adaugă postare
+              </button>
+            </Link>
+            <button
+              className={styles.button}
+              style={{
+                color: "#f57a4e",
+                backgroundColor: "transparent",
+              }}
+              onClick={handleLogout}
+            >
               <Image
-                src="/icons/add-plus.svg"
-                alt="Add Post Icon"
+                src="/icons/exit.svg"
+                alt="Exit Icon"
                 width={20}
                 height={20}
-              />
-              Adaugă postare
-            </button>
-          </Link>
-          <button
-            className={styles.button}
-            style={{
-              color: "#f57a4e",
-              backgroundColor: "transparent",
-            }}
-            onClick={handleLogout}
-          >
-            <Image
-              src="/icons/exit.svg"
-              alt="Exit Icon"
-              width={20}
-              height={20}
-            />{" "}
-            Ieși din cont
-          </button>
-        </div>
-        <div className={styles.posts_and_settings}>
-          <div className={styles.menu}>
-            <button
-              onClick={() => {
-                setActivePage("postari");
-                setPasswordChangeActive(false);
-                setDeleteAccountActive(false);
-              }}
-              className={activePage === "postari" ? styles.active : ""}
-            >
-              Postări
-            </button>
-            <button
-              onClick={() => setActivePage("setari")}
-              className={activePage === "setari" ? styles.active : ""}
-            >
-              Setări cont
+              />{" "}
+              Ieși din cont
             </button>
           </div>
-          {activePage === "postari" && <UserPosts />}
-          {activePage === "setari" && (
-            <section className={styles.settings_container}>
-              <div className={styles.settings}>
-                <div
-                  className={styles.settingstext}
-                  onClick={() => setPasswordChangeActive(!passwordChangeActive)}
-                >
-                  Schimbare parolă
-                  <Image
-                    src="/icons/arrow-right.svg"
-                    alt="Arrow Right Icon"
-                    style={passwordChangeActive ? { rotate: "90deg" } : {}}
-                    width={20}
-                    height={20}
-                  />{" "}
-                </div>
-                <div
-                  className={`${styles.settingsform} ${
-                    passwordChangeActive ? styles.active : ""
-                  }`}
-                >
-                  <form onSubmit={handlePasswordChange} className={styles.form}>
-                    <div className={styles.inputbox}>
-                      <label htmlFor="oldPassword" className={styles.hidden}>
-                        Parola veche
-                      </label>
-                      <input
-                        type="password"
-                        name="oldPassword"
-                        id="oldPassword"
-                        placeholder="Parola veche"
-                        value={oldPassword}
-                        onChange={(e) => {
-                          setOldPassword(e.target.value);
-                          setPasswordErrors({
-                            ...passwordErrors,
-                            oldPassword: undefined,
-                            general: undefined,
-                          });
-                        }}
-                        className={
-                          passwordErrors.oldPassword ? styles.error : ""
-                        }
-                        aria-required="true"
-                      />
-                      {passwordErrors.oldPassword && (
-                        <span className={styles.errormessage}>
-                          {passwordErrors.oldPassword}
-                        </span>
-                      )}
-                    </div>
-                    <div className={styles.inputbox}>
-                      <label htmlFor="newPassword" className={styles.hidden}>
-                        Parola nouă
-                      </label>
-                      <input
-                        type="password"
-                        name="newPassword"
-                        id="newPassword"
-                        placeholder="Parola nouă"
-                        value={newPassword}
-                        onChange={(e) => {
-                          setNewPassword(e.target.value);
-                          setPasswordErrors({
-                            ...passwordErrors,
-                            newPassword: undefined,
-                            general: undefined,
-                          });
-                        }}
-                        className={
-                          passwordErrors.newPassword ? styles.error : ""
-                        }
-                        aria-required="true"
-                      />
-                      {passwordErrors.newPassword && (
-                        <span className={styles.errormessage}>
-                          {passwordErrors.newPassword}
-                        </span>
-                      )}
-                    </div>
-                    <div className={styles.inputbox}>
-                      <label
-                        htmlFor="confirmPassword"
-                        className={styles.hidden}
-                      >
-                        Confirmare parola
-                      </label>
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        id="confirmPassword"
-                        placeholder="Confirmă parola"
-                        value={confirmPassword}
-                        onChange={(e) => {
-                          setConfirmPassword(e.target.value);
-                          setPasswordErrors({
-                            ...passwordErrors,
-                            confirmPassword: undefined,
-                            general: undefined,
-                          });
-                        }}
-                        className={
-                          passwordErrors.confirmPassword ? styles.error : ""
-                        }
-                        aria-required="true"
-                      />
-                      {passwordErrors.confirmPassword && (
-                        <span className={styles.errormessage}>
-                          {passwordErrors.confirmPassword}
-                        </span>
-                      )}
-                    </div>
-                    {passwordErrors.general && (
-                      <div className={styles.errorgeneral}>
-                        <Image
-                          src="/icons/error.svg"
-                          alt="Error Icon"
-                          width={15}
-                          height={15}
-                        />
-                        <span>{passwordErrors.general}</span>
-                      </div>
-                    )}
-                    <button type="submit" disabled={isPasswordDisabled}>
-                      {passwordLoading ? "Se salvează..." : "Salvează"}
-                    </button>
-                  </form>
-                </div>
-              </div>
-              <div className={styles.settings}>
-                <div className={styles.settingstext}>
-                  Termeni și condiții
-                  <Image
-                    src="/icons/arrow-right.svg"
-                    alt="Arrow Right Icon"
-                    width={20}
-                    height={20}
-                  />
-                </div>
-              </div>
-              <div className={styles.settings}>
-                <div className={styles.settingstext}>
-                  Politica de confidențialitate
-                  <Image
-                    src="/icons/arrow-right.svg"
-                    alt="Arrow Right Icon"
-                    width={20}
-                    height={20}
-                  />
-                </div>
-              </div>
-              <div className={styles.settings}>
-                <div className={styles.settingstext}>
-                  Setări cookies
-                  <Image
-                    src="/icons/arrow-right.svg"
-                    alt="Arrow Right Icon"
-                    width={20}
-                    height={20}
-                  />
-                </div>
-              </div>
-              <div
-                className={styles.settings}
-                style={{
-                  color: "#dc2626",
-                  // border: "1px solid rgba(255, 0, 0, 0.5)",
-                  opacity: "0.7",
+          <div className={styles.posts_and_settings}>
+            <div className={styles.menu}>
+              <button
+                onClick={() => {
+                  setActivePage("postari");
+                  setPasswordChangeActive(false);
+                  setDeleteAccountActive(false);
                 }}
+                className={activePage === "postari" ? styles.active : ""}
               >
-                <div
-                  className={styles.settingstext}
-                  onClick={() => setDeleteAccountActive(!deleteAccountActive)}
-                >
-                  Ștergere cont
-                  <Image
-                    src="/icons/arrow-right-red.svg"
-                    alt="Red Arrow Right Icon"
-                    style={deleteAccountActive ? { rotate: "90deg" } : {}}
-                    width={20}
-                    height={20}
-                  />
-                </div>
-                <div
-                  className={`${styles.settingsform} ${
-                    deleteAccountActive ? styles.active : ""
-                  }`}
-                >
-                  <div className={styles.deletewarning}>
-                    <p>&#9888;</p>
-                    <p>
-                      Această acțiune este permanentă și nu poate fi anulată!
-                    </p>
+                Postări
+              </button>
+              <button
+                onClick={() => setActivePage("setari")}
+                className={activePage === "setari" ? styles.active : ""}
+              >
+                Setări cont
+              </button>
+            </div>
+            {activePage === "postari" && <UserPosts />}
+            {activePage === "setari" && (
+              <section className={styles.settings_container}>
+                <div className={styles.settings}>
+                  <div
+                    className={styles.settingstext}
+                    onClick={() =>
+                      setPasswordChangeActive(!passwordChangeActive)
+                    }
+                  >
+                    Schimbare parolă
+                    <Image
+                      src="/icons/arrow-right.svg"
+                      alt="Arrow Right Icon"
+                      style={passwordChangeActive ? { rotate: "90deg" } : {}}
+                      width={20}
+                      height={20}
+                    />{" "}
                   </div>
-                  <form onSubmit={handleDeleteAccount} className={styles.form}>
-                    <div className={styles.inputbox}>
-                      <label htmlFor="deletePassword" className={styles.hidden}>
-                        Parola pentru confirmare
-                      </label>
-                      <input
-                        type="password"
-                        name="deletePassword"
-                        id="deletePassword"
-                        placeholder="Introduceți parola pentru confirmare"
-                        value={deletePassword}
-                        onChange={(e) => {
-                          setDeletePassword(e.target.value);
-                          setDeleteAccountErrors({
-                            ...deleteAccountErrors,
-                            password: undefined,
-                            general: undefined,
-                          });
-                        }}
-                        className={
-                          deleteAccountErrors.password ? styles.error : ""
-                        }
-                        aria-required="true"
-                      />
-                      {deleteAccountErrors.password && (
-                        <span className={styles.errormessage}>
-                          {deleteAccountErrors.password}
-                        </span>
-                      )}
-                    </div>
-                    <div className={styles.inputbox}>
-                      <label
-                        htmlFor="confirmationText"
-                        className={styles.hidden}
-                      >
-                        Text de confirmare
-                      </label>
-                      <input
-                        type="text"
-                        name="confirmationText"
-                        id="confirmationText"
-                        placeholder="Tastați 'STERGE CONTUL' pentru confirmare"
-                        value={confirmationText}
-                        onChange={(e) => {
-                          setConfirmationText(e.target.value.toUpperCase());
-                          setDeleteAccountErrors({
-                            ...deleteAccountErrors,
-                            confirmationText: undefined,
-                            general: undefined,
-                          });
-                        }}
-                        className={
-                          deleteAccountErrors.confirmationText
-                            ? styles.error
-                            : ""
-                        }
-                        aria-required="true"
-                      />
-                      {deleteAccountErrors.confirmationText && (
-                        <span className={styles.errormessage}>
-                          {deleteAccountErrors.confirmationText}
-                        </span>
-                      )}
-                    </div>
-                    <div className={styles.checkboxcontainer}>
-                      <label className={styles.checkboxlabel}>
-                        <label
-                          htmlFor="dataSecurityConfirmed"
-                          className={styles.hidden}
-                        >
-                          Confirmare Politica de Confidențialitate
+                  <div
+                    className={`${styles.settingsform} ${
+                      passwordChangeActive ? styles.active : ""
+                    }`}
+                  >
+                    <form
+                      onSubmit={handlePasswordChange}
+                      className={styles.form}
+                    >
+                      <div className={styles.inputbox}>
+                        <label htmlFor="oldPassword" className={styles.hidden}>
+                          Parola veche
                         </label>
                         <input
-                          type="checkbox"
-                          name="dataSecurityConfirmed"
-                          id="dataSecurityConfirmed"
-                          checked={dataSecurityConfirmed}
+                          type="password"
+                          name="oldPassword"
+                          id="oldPassword"
+                          placeholder="Parola veche"
+                          value={oldPassword}
                           onChange={(e) => {
-                            setDataSecurityConfirmed(e.target.checked);
-                            setDeleteAccountErrors({
-                              ...deleteAccountErrors,
-                              dataSecurityConfirmed: undefined,
+                            setOldPassword(e.target.value);
+                            setPasswordErrors({
+                              ...passwordErrors,
+                              oldPassword: undefined,
                               general: undefined,
                             });
                           }}
+                          className={
+                            passwordErrors.oldPassword ? styles.error : ""
+                          }
                           aria-required="true"
                         />
-                        <p>
-                          Am citit și înțeleg Politica de Confidențialitate și
-                          confirm că doresc să îmi șterg contul definitiv.
-                        </p>
-                      </label>
-                      {deleteAccountErrors.dataSecurityConfirmed && (
-                        <span className={styles.errorgeneral}>
-                          &#x26A0; {deleteAccountErrors.dataSecurityConfirmed}
-                        </span>
-                      )}
-                    </div>
-                    {deleteAccountErrors.general && (
-                      <div className={styles.errorgeneral}>
-                        <Image
-                          src="/icons/error.svg"
-                          alt="Error Icon"
-                          width={15}
-                          height={15}
-                        />
-                        <span>{deleteAccountErrors.general}</span>
+                        {passwordErrors.oldPassword && (
+                          <span className={styles.errormessage}>
+                            {passwordErrors.oldPassword}
+                          </span>
+                        )}
                       </div>
-                    )}
-                    <button
-                      type="submit"
-                      disabled={isDeleteDisabled}
-                      className={styles.deleteButton}
-                      style={{ backgroundColor: "#dc2626" }}
-                    >
-                      {deleteAccountLoading
-                        ? "Se șterge..."
-                        : "Șterge contul definitiv"}
-                    </button>
-                  </form>
+                      <div className={styles.inputbox}>
+                        <label htmlFor="newPassword" className={styles.hidden}>
+                          Parola nouă
+                        </label>
+                        <input
+                          type="password"
+                          name="newPassword"
+                          id="newPassword"
+                          placeholder="Parola nouă"
+                          value={newPassword}
+                          onChange={(e) => {
+                            setNewPassword(e.target.value);
+                            setPasswordErrors({
+                              ...passwordErrors,
+                              newPassword: undefined,
+                              general: undefined,
+                            });
+                          }}
+                          className={
+                            passwordErrors.newPassword ? styles.error : ""
+                          }
+                          aria-required="true"
+                        />
+                        {passwordErrors.newPassword && (
+                          <span className={styles.errormessage}>
+                            {passwordErrors.newPassword}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.inputbox}>
+                        <label
+                          htmlFor="confirmPassword"
+                          className={styles.hidden}
+                        >
+                          Confirmare parola
+                        </label>
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          id="confirmPassword"
+                          placeholder="Confirmă parola"
+                          value={confirmPassword}
+                          onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                            setPasswordErrors({
+                              ...passwordErrors,
+                              confirmPassword: undefined,
+                              general: undefined,
+                            });
+                          }}
+                          className={
+                            passwordErrors.confirmPassword ? styles.error : ""
+                          }
+                          aria-required="true"
+                        />
+                        {passwordErrors.confirmPassword && (
+                          <span className={styles.errormessage}>
+                            {passwordErrors.confirmPassword}
+                          </span>
+                        )}
+                      </div>
+                      {passwordErrors.general && (
+                        <div className={styles.errorgeneral}>
+                          <Image
+                            src="/icons/error.svg"
+                            alt="Error Icon"
+                            width={15}
+                            height={15}
+                          />
+                          <span>{passwordErrors.general}</span>
+                        </div>
+                      )}
+                      <button type="submit" disabled={isPasswordDisabled}>
+                        {passwordLoading ? "Se salvează..." : "Salvează"}
+                      </button>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            </section>
-          )}
-        </div>
-      </section>
-    </main>
+                <div className={styles.settings}>
+                  <div className={styles.settingstext}>
+                    Termeni și condiții
+                    <Image
+                      src="/icons/arrow-right.svg"
+                      alt="Arrow Right Icon"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                </div>
+                <div className={styles.settings}>
+                  <div className={styles.settingstext}>
+                    Politica de confidențialitate
+                    <Image
+                      src="/icons/arrow-right.svg"
+                      alt="Arrow Right Icon"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                </div>
+                <div className={styles.settings}>
+                  <div className={styles.settingstext}>
+                    Setări cookies
+                    <Image
+                      src="/icons/arrow-right.svg"
+                      alt="Arrow Right Icon"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                </div>
+                <div
+                  className={styles.settings}
+                  style={{
+                    color: "#dc2626",
+                    // border: "1px solid rgba(255, 0, 0, 0.5)",
+                    opacity: "0.7",
+                  }}
+                >
+                  <div
+                    className={styles.settingstext}
+                    onClick={() => setDeleteAccountActive(!deleteAccountActive)}
+                  >
+                    Ștergere cont
+                    <Image
+                      src="/icons/arrow-right-red.svg"
+                      alt="Red Arrow Right Icon"
+                      style={deleteAccountActive ? { rotate: "90deg" } : {}}
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <div
+                    className={`${styles.settingsform} ${
+                      deleteAccountActive ? styles.active : ""
+                    }`}
+                  >
+                    <div className={styles.deletewarning}>
+                      <p>&#9888;</p>
+                      <p>
+                        Această acțiune este permanentă și nu poate fi anulată!
+                      </p>
+                    </div>
+                    <form
+                      onSubmit={handleDeleteAccount}
+                      className={styles.form}
+                    >
+                      <div className={styles.inputbox}>
+                        <label
+                          htmlFor="deletePassword"
+                          className={styles.hidden}
+                        >
+                          Parola pentru confirmare
+                        </label>
+                        <input
+                          type="password"
+                          name="deletePassword"
+                          id="deletePassword"
+                          placeholder="Introduceți parola pentru confirmare"
+                          value={deletePassword}
+                          onChange={(e) => {
+                            setDeletePassword(e.target.value);
+                            setDeleteAccountErrors({
+                              ...deleteAccountErrors,
+                              password: undefined,
+                              general: undefined,
+                            });
+                          }}
+                          className={
+                            deleteAccountErrors.password ? styles.error : ""
+                          }
+                          aria-required="true"
+                        />
+                        {deleteAccountErrors.password && (
+                          <span className={styles.errormessage}>
+                            {deleteAccountErrors.password}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.inputbox}>
+                        <label
+                          htmlFor="confirmationText"
+                          className={styles.hidden}
+                        >
+                          Text de confirmare
+                        </label>
+                        <input
+                          type="text"
+                          name="confirmationText"
+                          id="confirmationText"
+                          placeholder="Tastați 'STERGE CONTUL' pentru confirmare"
+                          value={confirmationText}
+                          onChange={(e) => {
+                            setConfirmationText(e.target.value.toUpperCase());
+                            setDeleteAccountErrors({
+                              ...deleteAccountErrors,
+                              confirmationText: undefined,
+                              general: undefined,
+                            });
+                          }}
+                          className={
+                            deleteAccountErrors.confirmationText
+                              ? styles.error
+                              : ""
+                          }
+                          aria-required="true"
+                        />
+                        {deleteAccountErrors.confirmationText && (
+                          <span className={styles.errormessage}>
+                            {deleteAccountErrors.confirmationText}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.checkboxcontainer}>
+                        <label className={styles.checkboxlabel}>
+                          <label
+                            htmlFor="dataSecurityConfirmed"
+                            className={styles.hidden}
+                          >
+                            Confirmare Politica de Confidențialitate
+                          </label>
+                          <input
+                            type="checkbox"
+                            name="dataSecurityConfirmed"
+                            id="dataSecurityConfirmed"
+                            checked={dataSecurityConfirmed}
+                            onChange={(e) => {
+                              setDataSecurityConfirmed(e.target.checked);
+                              setDeleteAccountErrors({
+                                ...deleteAccountErrors,
+                                dataSecurityConfirmed: undefined,
+                                general: undefined,
+                              });
+                            }}
+                            aria-required="true"
+                          />
+                          <p>
+                            Am citit și înțeleg Politica de Confidențialitate și
+                            confirm că doresc să îmi șterg contul definitiv.
+                          </p>
+                        </label>
+                        {deleteAccountErrors.dataSecurityConfirmed && (
+                          <span className={styles.errorgeneral}>
+                            &#x26A0; {deleteAccountErrors.dataSecurityConfirmed}
+                          </span>
+                        )}
+                      </div>
+                      {deleteAccountErrors.general && (
+                        <div className={styles.errorgeneral}>
+                          <Image
+                            src="/icons/error.svg"
+                            alt="Error Icon"
+                            width={15}
+                            height={15}
+                          />
+                          <span>{deleteAccountErrors.general}</span>
+                        </div>
+                      )}
+                      <button
+                        type="submit"
+                        disabled={isDeleteDisabled}
+                        className={styles.deleteButton}
+                        style={{ backgroundColor: "#dc2626" }}
+                      >
+                        {deleteAccountLoading
+                          ? "Se șterge..."
+                          : "Șterge contul definitiv"}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
+        </section>
+      </main>
+      <ProfileImageModal
+        isOpen={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        onConfirm={handleImageConfirm}
+        isUploading={imageUploading}
+        currentImage={user.profileImage}
+      />
+    </>
   );
 }

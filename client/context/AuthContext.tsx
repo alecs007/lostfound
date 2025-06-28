@@ -56,6 +56,7 @@ interface AuthContextType {
     password: string,
     confirmPassword: string
   ) => Promise<void>;
+  changeProfileImage: (image: File) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -335,6 +336,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     []
   );
 
+  const changeProfileImage = async (file: File) => {
+    if (!accessToken.current) throw new Error("Not authenticated");
+
+    const form = new FormData();
+    form.append("image", file);
+
+    const res = await fetch(`${API_URL}/user/change-profile-image`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken.current}`,
+      },
+      body: form,
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      const err = {
+        message: data.message || data.error || "Image update failed",
+        code: data.code || "UNKNOWN_ERROR",
+        errors: data.errors || null,
+      };
+      throw err;
+    }
+
+    setUser((prev) => (prev ? { ...prev, profileImage: data.imageUrl } : prev));
+    return data.imageUrl;
+  };
+
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
@@ -376,6 +405,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         verifyEmail,
         forgotPassword,
         resetPassword,
+        changeProfileImage,
         loading,
       }}
     >
