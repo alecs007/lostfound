@@ -35,7 +35,7 @@ async function fetchLatestPosts(): Promise<Post[]> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/post/latest?limit=12`,
       {
-        next: { revalidate: 10 },
+        next: { revalidate: 300 },
       }
     );
 
