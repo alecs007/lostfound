@@ -43,3 +43,12 @@ textarea {
 .swiper-pagination-bullet {
   background-color: var(--blue) !important;
 }
+::-moz-selection {
+  background: var(--yellow);
+  color: white;
+}
+
+::selection {
+  background: var(--yellow);
+  color: white;
+}
