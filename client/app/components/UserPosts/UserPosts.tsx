@@ -110,12 +110,12 @@ export default function UserPosts() {
                 <div className={styles.id}>
                   ID: <p>{post.lostfoundID}</p>
                 </div>
-                <p style={{ margin: "0 5px" }}>|</p>
+                <p style={{ margin: "0 6px" }}>|</p>
                 <Image
                   src="/icons/eye.svg"
                   alt="Pictogramă vizualizări"
-                  width={16}
-                  height={16}
+                  width={19}
+                  height={19}
                   draggable={false}
                 />
                 <p>{post.views.toLocaleString("ro-RO")}</p>

@@ -77,7 +77,8 @@ export default function PostCard({ post }: { post: Post }) {
 
         <div className={styles.poststats}>
           <span className={styles.views}>
-            👁 {post.views.toLocaleString("ro-RO")}
+            <Image src="/icons/eye.svg" alt="Eye Icon" width={15} height={15} />{" "}
+            {post.views.toLocaleString("ro-RO")}
           </span>
           <span className={styles.postid}>{post.lostfoundID}</span>
         </div>
