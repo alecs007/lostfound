@@ -172,7 +172,10 @@ export default async function PostPage({ params }: PageProps) {
               Raportează
             </div>
           </div>
-        </div>{" "}
+          {/* <div className={styles.adcontainer}>
+            <Image src="/images/publicitate.png" alt="Publicitate" fill />
+          </div> */}
+        </div>
         <div className={styles.content}>
           <div className={styles.author}>
             <p>Postat de</p>
@@ -190,13 +193,13 @@ export default async function PostPage({ params }: PageProps) {
               </>
             )}{" "}
             <span>{timeAgo(post.createdAt)} </span>
-          </div>
+          </div>{" "}
           <p className={styles.description}>
             {post.content} Lorem ipsum dolor sit amet, consectetur adipisicing
             elit. Ipsum, perferendis iure quos minus error consequuntur facilis
             aliquid vel inventore, distinctio laborum culpa beatae nemo voluptas
             repellat reprehenderit fugit? Aliquam, sit?
-          </p>
+          </p>{" "}
           <div className={styles.detailbox}>
             <p>LostFound ID</p>
             <span className={styles.id}>{post.lostfoundID}</span>
