@@ -15,35 +15,7 @@ import MarkSolvedModal from "../MarkSolvedModal/MarkSolvedModal";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-
-interface Post {
-  _id: string;
-  author: string;
-  lostfoundID: string;
-  title: string;
-  content: string;
-  tags?: string[];
-  images: string[];
-  status: "found" | "lost" | "solved";
-  name: string;
-  email: string;
-  phone: string;
-  category: string;
-  lastSeen?: Date;
-  location: string;
-  locationCoordinates: { type: "Point"; coordinates: [number, number] };
-  circleRadius: number;
-  promoted: {
-    isActive: boolean;
-    expiresAt?: Date;
-  };
-  reward?: number;
-  views: number;
-  comments: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-}
+import { Post } from "@/types/Post";
 
 interface DeletePostResponse {
   code: string;

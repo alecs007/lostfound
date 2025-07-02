@@ -10,24 +10,9 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { User } from "../types/User";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-interface User {
-  _id: string;
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  lostfoundID: string;
-  profileImage: string;
-  bio: string;
-  badges: string[];
-  favoritePosts: string[];
-  isEmailVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 interface AuthProviderProps {
   children: ReactNode;

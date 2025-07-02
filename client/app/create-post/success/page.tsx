@@ -22,6 +22,7 @@ export default function SuccessPage() {
             fill
             sizes="100%"
             priority
+            draggable={false}
           />
         </div>
         <h1>Postarea a fost creată cu succes!</h1>
@@ -37,6 +38,7 @@ export default function SuccessPage() {
             width={23}
             height={23}
             priority
+            draggable={false}
           />
         </button>
         <h3>Nu, mulțumesc</h3>

@@ -1,0 +1,18 @@
+.images {
+  position: relative;
+  overflow: hidden;
+  background: url("/images/empty-space.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 5px;
+  box-shadow: rgba(14, 30, 37, 0.1) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.1) 0px 2px 8px 0px;
+}
+.slide {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+}

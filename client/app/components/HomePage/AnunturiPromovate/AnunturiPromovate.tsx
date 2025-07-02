@@ -1,25 +1,7 @@
 import styles from "./AnunturiPromovate.module.scss";
 import Image from "next/image";
 import PostCard from "../../PostCard/PostCard";
-
-interface Post {
-  _id: string;
-  title: string;
-  content?: string;
-  images: string[];
-  status: "found" | "lost" | "solved";
-  category: string;
-  location: string;
-  createdAt: string;
-  lostfoundID: string;
-  promoted: {
-    isActive: boolean;
-    expiresAt?: string;
-  };
-  lastSeen?: Date;
-  reward?: number;
-  views: number;
-}
+import { Post } from "@/types/Post";
 
 interface ApiResponse {
   code: string;
@@ -35,7 +17,8 @@ async function fetchLatestPosts(): Promise<Post[]> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/post/latest?limit=12`,
       {
-        next: { revalidate: 300 },
+        next: { revalidate: 3 },
+        /// 300
       }
     );
 

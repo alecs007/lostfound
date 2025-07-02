@@ -1,25 +1,7 @@
 import styles from "./PostCard.module.scss";
 import Image from "next/image";
 import Link from "next/link";
-
-interface Post {
-  _id: string;
-  title: string;
-  content?: string;
-  images: string[];
-  status: "found" | "lost" | "solved";
-  category: string;
-  location: string;
-  createdAt: string;
-  lostfoundID: string;
-  promoted: {
-    isActive: boolean;
-    expiresAt?: string;
-  };
-  lastSeen?: Date;
-  reward?: number;
-  views: number;
-}
+import { Post } from "@/types/Post";
 
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
@@ -32,6 +14,8 @@ function getStatusColor(status: string): string {
       return "#ff6b6b";
     case "found":
       return "#339af0";
+    case "solved":
+      return "#51e188";
     default:
       return "#868e96";
   }
@@ -63,7 +47,9 @@ export default function PostCard({ post }: { post: Post }) {
             className={styles.status}
             style={{ backgroundColor: getStatusColor(post.status) }}
           >
-            {post.status === "lost" ? "Pierdut" : "Găsit"}
+            {post.status === "lost" && "Pierdut"}
+            {post.status === "found" && "Găsit"}
+            {post.status === "solved" && "Rezolvat"}
           </span>
           <span className={styles.category}>{post.category}</span>
         </div>

@@ -219,7 +219,11 @@ export async function getPostByID(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const post = await Post.findById(postId);
+    const post = await Post.findByIdAndUpdate(
+      postId,
+      { $inc: { views: 1 } },
+      { new: true }
+    ).populate("author", "name profileImage");
 
     if (!post) {
       res.status(404).json({
