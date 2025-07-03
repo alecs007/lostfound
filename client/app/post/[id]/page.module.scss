@@ -88,6 +88,9 @@
     font-weight: 600;
   }
 }
+.large {
+  width: 50%;
+}
 .contact {
   width: 50%;
   height: 50px;
@@ -208,9 +211,7 @@
   .contact {
     width: 60%;
   }
-  .secbutton {
-    p {
-      display: none;
-    }
+  .secbutton:not(.large) p {
+    display: none;
   }
 }

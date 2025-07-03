@@ -460,7 +460,12 @@ export async function markPostSolved(
 
     const updatedPost = await Post.findOneAndUpdate(
       { _id: postId, author: userId },
-      { status: "solved", updatedAt: new Date() },
+      {
+        status: "solved",
+        updatedAt: new Date(),
+        lastSeen: new Date(),
+        $unset: { reward: "" },
+      },
       { new: true, select: "-__v" }
     ).lean();
 

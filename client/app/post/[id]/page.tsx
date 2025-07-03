@@ -127,17 +127,23 @@ export default async function PostPage({ params }: PageProps) {
           </div>
           <h1 className={styles.title}>{post.title}</h1>
           <div className={styles.buttoncontainer}>
-            <button className={styles.contact}>
-              <Image
-                src="/icons/phone.svg"
-                alt="Phone Icon"
-                width={22}
-                height={22}
-                draggable={false}
-              />
-              Contactează
-            </button>
-            <button className={styles.secbutton}>
+            {post.status != "solved" && (
+              <button className={styles.contact}>
+                <Image
+                  src="/icons/phone.svg"
+                  alt="Phone Icon"
+                  width={22}
+                  height={22}
+                  draggable={false}
+                />
+                Contactează
+              </button>
+            )}
+            <button
+              className={`${styles.secbutton} ${
+                post.status === "solved" && styles.large
+              }`}
+            >
               <Image
                 src="/icons/share.svg"
                 alt="Share Icon"
@@ -147,7 +153,11 @@ export default async function PostPage({ params }: PageProps) {
               />
               <p> Distribuie</p>
             </button>
-            <button className={styles.secbutton}>
+            <button
+              className={`${styles.secbutton} ${
+                post.status === "solved" && styles.large
+              }`}
+            >
               <Image
                 src="/icons/saved.svg"
                 alt="Saved Icon"
@@ -160,7 +170,6 @@ export default async function PostPage({ params }: PageProps) {
           </div>
           <div className={styles.info}>
             <div className={styles.views}>{post.views} vizualizări</div>
-
             <div className={styles.report}>
               <Image
                 src="/icons/report.svg"
