@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export function ProfileImage() {
   const { user, loading } = useAuth();
-  const profileImage = user?.profileImage || "/icons/user_profile.svg";
+  const profileImage = user?.profileImage || "/icons/user-icon.svg";
 
   if (loading) return <div style={{ width: 30, height: 30 }}></div>;
 
@@ -21,7 +21,6 @@ export function ProfileImage() {
           borderRadius: "50%",
           objectFit: "cover",
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-          ...(user ? {} : { opacity: 0.85 }),
         }}
         priority
       />

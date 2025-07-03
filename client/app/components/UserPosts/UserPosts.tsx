@@ -167,7 +167,7 @@ export default function UserPosts() {
               </div>
             )}
             <div className={styles.post}>
-              <div className={styles.images}>
+              <Link href={`/post/${post._id}`} className={styles.images}>
                 <Swiper
                   modules={[Pagination]}
                   spaceBetween={0}
@@ -189,10 +189,12 @@ export default function UserPosts() {
                     </SwiperSlide>
                   ))}
                 </Swiper>
-              </div>
+              </Link>
               <div className={styles.postinfo}>
                 <div className={styles.postcontent}>
-                  <h2>{post.title}</h2>
+                  <Link href={`/post/${post._id}`}>
+                    <h2>{post.title}</h2>
+                  </Link>
                   <div className={styles.box} style={{ height: "30px" }}>
                     <Image
                       src="/icons/location_pin.svg"

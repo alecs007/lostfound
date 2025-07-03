@@ -3,8 +3,10 @@ import { Post } from "@/types/Post";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import PostGallery from "../../components/PostPage/PostGallery/PostGallery";
+import PostMap from "../../components/PostPage/PostMap/PostMapWrapper";
+import UserLink from "@/app/components/PostPage/UserLink/UserLink";
 import Image from "next/image";
-import Link from "next/link";
+
 import {
   differenceInYears,
   differenceInMonths,
@@ -12,7 +14,6 @@ import {
   differenceInHours,
   differenceInMinutes,
 } from "date-fns";
-import PostMap from "../../components/PostPage/PostMap/PostMapWrapper";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -196,9 +197,7 @@ export default async function PostPage({ params }: PageProps) {
                   width={25}
                   height={25}
                 />
-                <Link href={`/user/${post.author._id}`}>
-                  <b>{post.author.name}</b>
-                </Link>
+                <UserLink name={post.author.name} id={post.author._id} />
               </>
             )}{" "}
             <span>{timeAgo(post.createdAt)} </span>
