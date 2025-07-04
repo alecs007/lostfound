@@ -2,6 +2,7 @@ import styles from "./page.module.scss";
 import { Post } from "@/types/Post";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import React from "react";
 import PostGallery from "../../components/PostPage/PostGallery/PostGallery";
 import PostMap from "../../components/PostPage/PostMap/PostMapWrapper";
 import CommentsHeader from "@/app/components/PostPage/CommentsHeader/CommentsHeader";
@@ -215,10 +216,16 @@ export default async function PostPage({ params }: PageProps) {
             <span>{timeAgo(post.createdAt)} </span>
           </div>{" "}
           <p className={styles.description}>
-            {post.content} Lorem ipsum dolor sit amet, consectetur adipisicing
-            elit. Ipsum, perferendis iure quos minus error consequuntur facilis
-            aliquid vel inventore, distinctio laborum culpa beatae nemo voluptas
-            repellat reprehenderit fugit? Aliquam, sit?
+            {post.content.split("\n").map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}{" "}
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum,
+            perferendis iure quos minus error consequuntur facilis aliquid vel
+            inventore, distinctio laborum culpa beatae nemo voluptas repellat
+            reprehenderit fugit? Aliquam, sit?
           </p>{" "}
           <div className={styles.detailbox}>
             <p>LostFound ID</p>

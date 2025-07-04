@@ -87,6 +87,7 @@ export default function CommentItem({ comment, timeAgo }: Props) {
             alt="Options"
             width={15}
             height={15}
+            draggable={false}
           />
         </button>
 
@@ -99,6 +100,7 @@ export default function CommentItem({ comment, timeAgo }: Props) {
                   alt="Report"
                   width={15}
                   height={15}
+                  draggable={false}
                 />
                 Raportează
               </button>
@@ -115,6 +117,7 @@ export default function CommentItem({ comment, timeAgo }: Props) {
                   alt="Delete"
                   width={15}
                   height={15}
+                  draggable={false}
                 />
                 Șterge
               </button>
