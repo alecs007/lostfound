@@ -76,3 +76,14 @@
   white-space: nowrap;
   border: 0;
 }
+
+@media screen and (max-width: 1200px) {
+  .form {
+    h1 {
+      font-size: 2.2em;
+    }
+    p {
+      font-size: 1.1em;
+    }
+  }
+}

@@ -65,17 +65,23 @@ export default function CreatePostForm() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const isFormDisabled = submitting || postLoading;
+  const isProcessing = submitting || postLoading;
+
   const handleLocationChange = useCallback(
     (locationData: LocationData | null) => {
+      if (isFormDisabled) return;
       setLocation(locationData);
       if (locationData && errors.location) {
         setErrors((prev) => ({ ...prev, location: undefined }));
       }
     },
-    [errors.location]
+    [errors.location, isFormDisabled]
   );
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isFormDisabled) return;
+
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
       const trimmed = tagInput.trim();
@@ -97,10 +103,12 @@ export default function CreatePostForm() {
   };
 
   const removeTag = (index: number) => {
+    if (isFormDisabled) return;
     setTags((prev) => prev.filter((_, i) => i !== index));
   };
 
   const clearError = (field: keyof FieldErrors) => {
+    if (isFormDisabled) return;
     if (errors[field] || errors.general) {
       setErrors((prev) => ({
         ...prev,
@@ -150,12 +158,14 @@ export default function CreatePostForm() {
     }
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isFormDisabled) return;
+
     setErrors({});
 
     if (!validateForm()) {
@@ -202,13 +212,12 @@ export default function CreatePostForm() {
       };
 
       const result = await createPost(postData);
+
+      // Store the post ID and redirect immediately after successful creation
       sessionStorage.setItem("createdPostID", result.postID);
-      // toast.success("Postarea a fost creată cu succes!");
 
+      // Redirect immediately after successful creation
       router.push("/create-post/success");
-
-      // Reset form or redirect
-      // router.push('/posts/' + result.post._id);
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "message" in err) {
         const error = err as PostError;
@@ -280,12 +289,14 @@ export default function CreatePostForm() {
                   }}
                   className={errors.name ? styles.error : ""}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
                 {name && (
                   <button
                     type="button"
-                    onClick={() => setName("")}
+                    onClick={() => !isFormDisabled && setName("")}
                     className={styles.clear}
+                    disabled={isFormDisabled}
                   >
                     ✕
                   </button>
@@ -319,12 +330,14 @@ export default function CreatePostForm() {
                   }}
                   className={errors.email ? styles.error : ""}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
                 {email && (
                   <button
                     type="button"
-                    onClick={() => setEmail("")}
+                    onClick={() => !isFormDisabled && setEmail("")}
                     className={styles.clear}
+                    disabled={isFormDisabled}
                   >
                     ✕
                   </button>
@@ -332,9 +345,12 @@ export default function CreatePostForm() {
               </div>
               <div className={styles.phonebox}>
                 <PhoneInput
-                  onPhoneChange={(phone) => setPhone(phone || "")}
+                  onPhoneChange={(phone) =>
+                    !isFormDisabled && setPhone(phone || "")
+                  }
                   clearError={clearError}
                   errors={errors.phone}
+                  disabled={isFormDisabled}
                 />
               </div>
             </div>
@@ -354,10 +370,12 @@ export default function CreatePostForm() {
                     type="button"
                     className={`${status === "pierdut" && styles.active}`}
                     onClick={() => {
+                      if (isFormDisabled) return;
                       setStatus("pierdut");
                       setReward("");
                     }}
                     style={{ borderRadius: "5px 0 0 5px" }}
+                    disabled={isFormDisabled}
                   >
                     Pierdut
                   </button>
@@ -365,10 +383,12 @@ export default function CreatePostForm() {
                     type="button"
                     className={`${status === "gasit" && styles.active}`}
                     onClick={() => {
+                      if (isFormDisabled) return;
                       setStatus("gasit");
                       setReward("");
                     }}
                     style={{ borderRadius: "0 5px 5px 0" }}
+                    disabled={isFormDisabled}
                   >
                     Găsit
                   </button>
@@ -401,12 +421,14 @@ export default function CreatePostForm() {
                   }}
                   className={errors.title ? styles.error : ""}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
                 {title && (
                   <button
                     type="button"
-                    onClick={() => setTitle("")}
+                    onClick={() => !isFormDisabled && setTitle("")}
                     className={styles.clear}
+                    disabled={isFormDisabled}
                   >
                     ✕
                   </button>
@@ -442,6 +464,7 @@ export default function CreatePostForm() {
                   maxLength={1000}
                   className={errors.content ? styles.error : ""}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
               </div>
               <div className={styles.inputbox}>
@@ -462,11 +485,16 @@ export default function CreatePostForm() {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleTagKeyDown}
                     aria-required="true"
+                    disabled={isFormDisabled}
                   />
                   {tags.map((tag, index) => (
                     <span key={index} className={styles.tag}>
                       {tag}
-                      <button type="button" onClick={() => removeTag(index)}>
+                      <button
+                        type="button"
+                        onClick={() => removeTag(index)}
+                        disabled={isFormDisabled}
+                      >
                         &#x2716;
                       </button>
                     </span>
@@ -502,13 +530,15 @@ export default function CreatePostForm() {
                     }}
                     className={errors.reward ? styles.error : ""}
                     aria-required="true"
+                    disabled={isFormDisabled}
                   />
                   {reward && <span className={styles.ronlabel}>RON</span>}
                   {reward && (
                     <button
                       type="button"
-                      onClick={() => setReward("")}
+                      onClick={() => !isFormDisabled && setReward("")}
                       className={styles.clear}
+                      disabled={isFormDisabled}
                     >
                       ✕
                     </button>
@@ -544,6 +574,7 @@ export default function CreatePostForm() {
                   max={new Date().toISOString().split("T")[0]}
                   className={styles.dateinput}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
               </div>
               <div className={styles.inputbox}>
@@ -567,7 +598,10 @@ export default function CreatePostForm() {
                   <button
                     type="button"
                     className={styles.uploadbutton}
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() =>
+                      !isFormDisabled && fileInputRef.current?.click()
+                    }
+                    disabled={isFormDisabled}
                   >
                     Adaugă imagini <span>+</span>
                   </button>
@@ -583,6 +617,7 @@ export default function CreatePostForm() {
                     ref={fileInputRef}
                     style={{ display: "none" }}
                     onChange={(e) => {
+                      if (isFormDisabled) return;
                       const files = Array.from(e.target.files || []);
                       const newValidImages: File[] = [];
                       for (const file of files) {
@@ -605,6 +640,7 @@ export default function CreatePostForm() {
                       e.target.value = "";
                     }}
                     aria-required="true"
+                    disabled={isFormDisabled}
                   />
                 </div>
                 <div className={styles.imagepreviewwrapper}>
@@ -621,12 +657,14 @@ export default function CreatePostForm() {
                         />
                         <button
                           type="button"
-                          onClick={() =>
+                          onClick={() => {
+                            if (isFormDisabled) return;
                             setImages((prev) =>
                               prev.filter((_, i) => i !== index)
-                            )
-                          }
+                            );
+                          }}
                           className={styles.deletebutton}
+                          disabled={isFormDisabled}
                         >
                           &#x2716;
                         </button>
@@ -653,11 +691,18 @@ export default function CreatePostForm() {
                 <div className={styles.categoriescontainer}>
                   {categories.map((category) => (
                     <div
-                      className={styles.category}
+                      className={`${styles.category} ${
+                        isFormDisabled ? styles.disabled : ""
+                      }`}
                       key={category.name}
                       onClick={() => {
+                        if (isFormDisabled) return;
                         setSelectedCategory(category.name);
                         clearError("category");
+                      }}
+                      style={{
+                        pointerEvents: isFormDisabled ? "none" : "auto",
+                        opacity: isFormDisabled ? 0.6 : 1,
                       }}
                     >
                       <div
@@ -703,18 +748,17 @@ export default function CreatePostForm() {
                   onLocationChange={handleLocationChange}
                   errors={errors.location}
                   clearError={clearError}
+                  disabled={isFormDisabled}
                 />
               </div>
               <div className={styles.submitbox}>
                 <button
                   type="submit"
                   className={styles.submitbutton}
-                  disabled={submitting || postLoading}
+                  disabled={isFormDisabled}
                 >
                   <p>
-                    {submitting || postLoading
-                      ? "Se procesează..."
-                      : "Finalizează postarea"}
+                    {isProcessing ? "Se procesează..." : "Finalizează postarea"}
                   </p>
                   <Image
                     src="/icons/arrow-right-orange.svg"

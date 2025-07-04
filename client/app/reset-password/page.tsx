@@ -111,6 +111,7 @@ export default function ResetPasswordPage() {
                 errors.password || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.password && (
               <span className={styles.errormessage}>{errors.password}</span>
@@ -146,6 +147,7 @@ export default function ResetPasswordPage() {
                 errors.confirmPassword || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.confirmPassword && (
               <span className={styles.errormessage}>

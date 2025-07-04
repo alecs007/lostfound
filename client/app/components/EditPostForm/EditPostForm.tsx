@@ -83,10 +83,24 @@ export default function EditPostForm() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const clearError = (field: keyof FieldErrors) =>
-    setErrors((prev) => ({ ...prev, [field]: undefined, general: undefined }));
+  const isFormDisabled = submitting || postLoading;
+  const isProcessing = submitting || postLoading;
+
+  const clearError = useCallback(
+    (field: keyof FieldErrors) => {
+      if (isFormDisabled) return;
+      setErrors((prev) => ({
+        ...prev,
+        [field]: undefined,
+        general: undefined,
+      }));
+    },
+    [isFormDisabled]
+  );
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isFormDisabled) return;
+
     if ((e.key === " " || e.key === "Enter") && tagInput.trim()) {
       e.preventDefault();
       if (tags.length >= 20) return toast.error("Maxim 20 etichete");
@@ -99,21 +113,29 @@ export default function EditPostForm() {
     }
   };
 
-  const removeTag = (index: number) =>
+  const removeTag = (index: number) => {
+    if (isFormDisabled) return;
     setTags((prev) => prev.filter((_, i) => i !== index));
+  };
 
-  const handleLocationChange = useCallback((loc: LocationData | null) => {
-    setLocation(loc);
-    if (loc) clearError("location");
-  }, []);
+  const handleLocationChange = useCallback(
+    (loc: LocationData | null) => {
+      if (isFormDisabled) return;
+      setLocation(loc);
+      if (loc) clearError("location");
+    },
+    [isFormDisabled, setLocation, clearError]
+  );
 
   const handleRemoveExisting = (url: string) => {
+    if (isFormDisabled) return;
     setExistingImages((prev) => prev.filter((u) => u !== url));
     setImagesToRemove((prev) => [...prev, url]);
     clearError("images");
   };
 
   const handleAddImages = (files: FileList | null) => {
+    if (isFormDisabled) return;
     if (!files) return;
     const valid: File[] = [];
     Array.from(files).forEach((file) => {
@@ -223,6 +245,8 @@ export default function EditPostForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isFormDisabled) return;
+
     if (!validateForm()) {
       toast.error("Vă rugăm să completați toate câmpurile obligatorii");
       return;
@@ -330,12 +354,14 @@ export default function EditPostForm() {
                 }}
                 className={errors.name ? styles.error : ""}
                 aria-required="true"
+                disabled={isFormDisabled}
               />
               {name && (
                 <button
                   type="button"
                   className={styles.clear}
-                  onClick={() => setName("")}
+                  onClick={() => !isFormDisabled && setName("")}
+                  disabled={isFormDisabled}
                 >
                   ✕
                 </button>
@@ -366,12 +392,14 @@ export default function EditPostForm() {
                 className={errors.email ? styles.error : ""}
                 autoComplete="email"
                 aria-required="true"
+                disabled={isFormDisabled}
               />
               {email && (
                 <button
                   type="button"
                   className={styles.clear}
-                  onClick={() => setEmail("")}
+                  onClick={() => !isFormDisabled && setEmail("")}
+                  disabled={isFormDisabled}
                 >
                   ✕
                 </button>
@@ -379,10 +407,13 @@ export default function EditPostForm() {
             </div>
             <div className={styles.phonebox}>
               <PhoneInput
-                onPhoneChange={(p) => setPhone(p || "")}
+                onPhoneChange={(phone) =>
+                  !isFormDisabled && setPhone(phone || "")
+                }
                 clearError={clearError}
                 errors={errors.phone}
                 initialPhone={phone}
+                disabled={isFormDisabled}
               />
             </div>
           </div>
@@ -401,10 +432,12 @@ export default function EditPostForm() {
                     type="button"
                     className={status === "lost" ? styles.active : ""}
                     onClick={() => {
+                      if (isFormDisabled) return;
                       setStatus("lost");
                       setReward("");
                     }}
                     style={{ borderRadius: "5px 0 0 5px" }}
+                    disabled={isFormDisabled}
                   >
                     Pierdut
                   </button>
@@ -412,10 +445,12 @@ export default function EditPostForm() {
                     type="button"
                     className={status === "found" ? styles.active : ""}
                     onClick={() => {
+                      if (isFormDisabled) return;
                       setStatus("found");
                       setReward("");
                     }}
                     style={{ borderRadius: "0 5px 5px 0" }}
+                    disabled={isFormDisabled}
                   >
                     Găsit
                   </button>
@@ -446,12 +481,14 @@ export default function EditPostForm() {
                   }}
                   className={errors.title ? styles.error : ""}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
                 {title && (
                   <button
                     type="button"
                     className={styles.clear}
-                    onClick={() => setTitle("")}
+                    onClick={() => !isFormDisabled && setTitle("")}
+                    disabled={isFormDisabled}
                   >
                     ✕
                   </button>
@@ -485,6 +522,7 @@ export default function EditPostForm() {
                   className={errors.content ? styles.error : ""}
                   maxLength={1000}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
               </div>
 
@@ -506,11 +544,16 @@ export default function EditPostForm() {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleTagKeyDown}
                     aria-required="true"
+                    disabled={isFormDisabled}
                   />
                   {tags.map((tag, i) => (
                     <span key={i} className={styles.tag}>
                       {tag}
-                      <button type="button" onClick={() => removeTag(i)}>
+                      <button
+                        type="button"
+                        onClick={() => removeTag(i)}
+                        disabled={isFormDisabled}
+                      >
                         &#x2716;
                       </button>
                     </span>
@@ -544,13 +587,15 @@ export default function EditPostForm() {
                     }}
                     className={errors.reward ? styles.error : ""}
                     aria-required="true"
+                    disabled={isFormDisabled}
                   />
                   {reward && <span className={styles.ronlabel}>RON</span>}
                   {reward && (
                     <button
                       type="button"
                       className={styles.clear}
-                      onClick={() => setReward("")}
+                      onClick={() => !isFormDisabled && setReward("")}
+                      disabled={isFormDisabled}
                     >
                       ✕
                     </button>
@@ -573,6 +618,7 @@ export default function EditPostForm() {
                   max={new Date().toISOString().split("T")[0]}
                   onChange={(e) => setLastSeen(e.target.value)}
                   aria-required="true"
+                  disabled={isFormDisabled}
                 />
               </div>
 
@@ -589,7 +635,10 @@ export default function EditPostForm() {
                   <button
                     type="button"
                     className={styles.uploadbutton}
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() =>
+                      !isFormDisabled && fileInputRef.current?.click()
+                    }
+                    disabled={isFormDisabled}
                   >
                     Adaugă imagini <span>+</span>
                   </button>
@@ -606,6 +655,7 @@ export default function EditPostForm() {
                     style={{ display: "none" }}
                     onChange={(e) => handleAddImages(e.target.files)}
                     aria-required="true"
+                    disabled={isFormDisabled}
                   />
                 </div>
 
@@ -623,6 +673,7 @@ export default function EditPostForm() {
                         type="button"
                         className={styles.deletebutton}
                         onClick={() => handleRemoveExisting(url)}
+                        disabled={isFormDisabled}
                       >
                         &#x2716;
                       </button>
@@ -673,8 +724,13 @@ export default function EditPostForm() {
                       key={cat.name}
                       className={styles.category}
                       onClick={() => {
+                        if (isFormDisabled) return;
                         setSelectedCategory(cat.name);
                         clearError("category");
+                      }}
+                      style={{
+                        pointerEvents: isFormDisabled ? "none" : "auto",
+                        opacity: isFormDisabled ? 0.6 : 1,
                       }}
                     >
                       <div
@@ -721,6 +777,7 @@ export default function EditPostForm() {
                 errors={errors.location}
                 clearError={clearError}
                 initialLocation={location}
+                disabled={isFormDisabled}
               />
 
               <div className={styles.submitbox}>
@@ -728,16 +785,19 @@ export default function EditPostForm() {
                   <button
                     type="button"
                     className={styles.cancelbutton}
-                    onClick={() => router.back()}
+                    onClick={() => {
+                      if (isFormDisabled) return;
+                      router.back();
+                    }}
                   >
                     Anulează
                   </button>
                   <button
                     type="submit"
                     className={styles.submitbutton}
-                    disabled={postLoading || submitting}
+                    disabled={isFormDisabled}
                   >
-                    {postLoading || submitting
+                    {isProcessing
                       ? "Se procesează..."
                       : "Salvează modificările"}
                   </button>

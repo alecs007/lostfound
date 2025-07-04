@@ -51,6 +51,7 @@ interface MapLocationInputProps {
   errors?: string;
   clearError: (field: keyof FieldErrors) => void;
   initialLocation?: LocationData | null;
+  disabled?: boolean;
 }
 
 function ClickableMap({
@@ -74,6 +75,7 @@ export default function MapInput({
   errors,
   clearError,
   initialLocation,
+  disabled,
 }: MapLocationInputProps) {
   const [locationQuery, setLocationQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -206,6 +208,7 @@ export default function MapInput({
   }, [markerPosition, locationName, selectedRadius, onLocationChange]);
 
   const handleMapClick = async (lat: number, lng: number) => {
+    if (disabled) return;
     setMarkerPosition({ lat, lng });
     const name = await fetchLocationName(lat, lng);
     setLocationName(name);
@@ -215,6 +218,7 @@ export default function MapInput({
   };
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
+    if (disabled) return;
     const lat = parseFloat(suggestion.lat);
     const lng = parseFloat(suggestion.lon);
 
@@ -230,6 +234,7 @@ export default function MapInput({
   };
 
   const clearLocation = () => {
+    if (disabled) return;
     setLocationQuery("");
     setMarkerPosition(null);
     setLocationName("");
@@ -321,11 +326,15 @@ export default function MapInput({
               clearError("location");
             }}
             aria-required="true"
+            disabled={disabled}
           />
           {locationQuery && (
             <button
               className={styles.clear}
-              onClick={clearLocation}
+              onClick={() => {
+                if (disabled) return;
+                clearLocation();
+              }}
               type="button"
             >
               ✕
@@ -353,6 +362,7 @@ export default function MapInput({
                       opt === selectedRadius ? styles.selected : ""
                     }`}
                     onClick={() => {
+                      if (disabled) return;
                       setSelectedRadius(opt);
                       setRadiusOpen(false);
                     }}

@@ -5,6 +5,7 @@ import { cache } from "react";
 import PostGallery from "../../components/PostPage/PostGallery/PostGallery";
 import PostMap from "../../components/PostPage/PostMap/PostMapWrapper";
 import CommentsHeader from "@/app/components/PostPage/CommentsHeader/CommentsHeader";
+import CommentItem from "@/app/components/PostPage/CommentItem/CommentItem";
 import UserLink from "@/app/components/PostPage/UserLink/UserLink";
 import Image from "next/image";
 
@@ -285,35 +286,11 @@ export default async function PostPage({ params }: PageProps) {
                   new Date(a.createdAt).getTime()
               )
               .map((comment) => (
-                <div className={styles.comment} key={comment._id}>
-                  <div className={styles.commentinfo}>
-                    <div className={styles.author}>
-                      <Image
-                        src={
-                          comment.author?.profileImage || "/icons/user-icon.svg"
-                        }
-                        alt="Profile Icon"
-                        width={25}
-                        height={25}
-                      />
-                      {comment.author ? (
-                        <UserLink
-                          name={comment.author.name}
-                          id={comment.author._id}
-                        />
-                      ) : (
-                        <b className={styles.deleted}>Utilizator șters</b>
-                      )}
-                    </div>
-                    <p>{timeAgo(comment.createdAt)}</p>
-                  </div>
-                  <p>
-                    {comment.content} Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Illo eius quis numquam modi, harum
-                    incidunt maiores atque velit inventore minus vel corporis
-                    recusandae magni ea! Quam et temporibus velit deleniti!
-                  </p>
-                </div>
+                <CommentItem
+                  key={comment._id}
+                  comment={comment}
+                  timeAgo={timeAgo(comment.createdAt)}
+                />
               ))}
           </div>
         )}

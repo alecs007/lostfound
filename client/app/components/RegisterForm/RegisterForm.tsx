@@ -110,6 +110,7 @@ export default function RegisterForm() {
                 errors.name || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.name && (
               <span className={styles.errormessage}>{errors.name}</span>
@@ -142,6 +143,7 @@ export default function RegisterForm() {
                 errors.email || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.email && (
               <span className={styles.errormessage}>{errors.email}</span>
@@ -177,6 +179,7 @@ export default function RegisterForm() {
                 errors.password || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.password && (
               <span className={styles.errormessage}>{errors.password}</span>
@@ -212,6 +215,7 @@ export default function RegisterForm() {
                 errors.confirmPassword || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.confirmPassword && (
               <span className={styles.errormessage}>

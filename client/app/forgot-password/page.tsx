@@ -61,6 +61,7 @@ export default function ForgotPassword() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-required="true"
+            disabled={loading}
           />
         </div>
         <button onClick={handleEmailSubmit} type="submit" disabled={loading}>

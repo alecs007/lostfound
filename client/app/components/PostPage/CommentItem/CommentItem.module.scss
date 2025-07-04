@@ -1,0 +1,101 @@
+.comment {
+  width: 100%;
+  padding: 10px 15px 40px 15px;
+  border-radius: 5px;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.5;
+  position: relative;
+  p {
+    font-size: 1em;
+    font-weight: 500;
+    color: #2b2b2b;
+  }
+}
+.commentinfo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  p {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #2b2b2b;
+  }
+}
+.author {
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--blue);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  p {
+    text-wrap: nowrap;
+  }
+  b {
+    text-wrap: wrap;
+  }
+  span {
+    text-wrap: nowrap;
+  }
+  .deleted {
+    font-style: italic;
+  }
+}
+.author b:hover {
+  text-decoration: underline;
+}
+.optionswrapper {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.optionsbutton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+.menu {
+  position: absolute;
+  bottom: 30px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 10;
+}
+.menuitem {
+  padding: 8px 12px;
+  width: 100%;
+  background: white;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f1f3f5;
+  }
+}

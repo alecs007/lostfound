@@ -100,6 +100,7 @@ export default function LoginForm() {
                 errors.email || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.email && (
               <span className={styles.errormessage}>{errors.email}</span>
@@ -134,6 +135,7 @@ export default function LoginForm() {
                 errors.password || errors.general ? styles.error : ""
               }`}
               aria-required="true"
+              disabled={loading}
             />
             {errors.password && (
               <span className={styles.errormessage}>{errors.password}</span>

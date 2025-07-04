@@ -68,6 +68,7 @@ interface PhoneInputProps {
   errors?: string;
   clearError: (field: keyof FieldErrors) => void;
   initialPhone?: string | null;
+  disabled?: boolean;
 }
 
 export default function PhoneInput({
@@ -75,6 +76,7 @@ export default function PhoneInput({
   errors,
   clearError,
   initialPhone,
+  disabled,
 }: PhoneInputProps) {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(
     countryCodes[0]
@@ -126,6 +128,7 @@ export default function PhoneInput({
   }, [selectedCountry, phoneNumber, onPhoneChange, clearError]);
 
   const handleCountrySelect = (country: CountryCode) => {
+    if (disabled) return;
     setSelectedCountry(country);
     setCountryDropdownOpen(false);
     setFilteredCountries(countryCodes);
@@ -181,6 +184,7 @@ export default function PhoneInput({
                     placeholder="Căutați țara..."
                     onChange={(e) => filterCountries(e.target.value)}
                     className={styles.countrysearchinput}
+                    disabled={disabled}
                   />
                 </div>
                 <div className={styles.countrylist}>
@@ -230,6 +234,7 @@ export default function PhoneInput({
               <button
                 className={styles.clear}
                 onClick={() => {
+                  if (disabled) return;
                   setPhoneNumber("");
                   onPhoneChange(null);
                 }}
