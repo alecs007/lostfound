@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./CommentItem.module.scss";
+import React from "react";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import UserLink from "../UserLink/UserLink";
@@ -71,10 +72,16 @@ export default function CommentItem({ comment, timeAgo }: Props) {
         <p>{timeAgo}</p>
       </div>
       <p>
-        {comment.content} Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Saepe, vel autem officia, eum nemo veritatis numquam dolorum
-        temporibus reprehenderit hic rem consequatur nobis expedita nam
-        voluptate obcaecati in, enim mollitia? asda da da da sd ad21
+        {comment.content.split("\n").map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            <br />
+          </React.Fragment>
+        ))}{" "}
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe, vel
+        autem officia, eum nemo veritatis numquam dolorum temporibus
+        reprehenderit hic rem consequatur nobis expedita nam voluptate obcaecati
+        in, enim mollitia? asda da da da sd ad21
       </p>
 
       <div className={styles.optionswrapper} ref={menuRef}>
