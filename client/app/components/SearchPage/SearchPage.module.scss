@@ -71,12 +71,11 @@
     color: var(--blue, #2c3e60);
   }
   .resultsheader {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     h2 {
-      font-size: 1.4em;
+      font-size: 1.2em;
       color: var(--blue, #2c3e60);
       font-weight: 600;
-      text-align: center;
     }
   }
   .resultscontainer {
@@ -84,7 +83,6 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
     gap: 20px;
   }
   .loadmore {

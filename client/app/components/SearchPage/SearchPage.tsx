@@ -338,7 +338,10 @@ export default function SearchPage({ category }: SearchPageProps) {
             </div>
           ) : (
             <>
-              <div className={styles.resultsheader}>
+              <div
+                className={styles.resultsheader}
+                style={{ textAlign: totalCount === 0 ? "center" : "left" }}
+              >
                 <h2>
                   {totalCount === 0 && "Nu s-au găsit rezultate"}
                   {totalCount === 1 && "1 rezultat"}

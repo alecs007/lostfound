@@ -77,13 +77,16 @@ postSchema.index({ title: "text", content: "text", tags: "text" });
 postSchema.index({ author: 1 });
 postSchema.index({ category: 1 });
 postSchema.index({ status: 1 });
-postSchema.index({ "promoted.isActive": 1 });
+postSchema.index({ "promoted.isActive": 1, "promoted.expiresAt": 1 });
 postSchema.index({ lastSeen: -1 });
 
 // 2dsphere index for location-based search
 postSchema.index({ locationCoordinates: "2dsphere" });
 
-// Optional: index for createdAt if you want to sort by newest posts
+postSchema.index(
+  { category: 1, status: 1, createdAt: -1 },
+  { partialFilterExpression: { status: { $ne: "solved" } } }
+);
 postSchema.index({ createdAt: -1 });
 
 function generatePostId(length = 5) {
