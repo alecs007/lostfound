@@ -107,9 +107,10 @@ export const SearchProvider = ({ children }: SearchProviderProps) => {
             responseData?.code === "VALIDATION_ERROR" &&
             responseData.errors?.length
           ) {
-            const messages = responseData.errors
-              .map((e: { field: string; message: string }) => `${e.message}`)
-              .join(", ");
+            const messages = responseData.errors.map(
+              (e: { message: string }) => `${e.message}`
+            );
+
             throw new Error(messages);
           }
 
