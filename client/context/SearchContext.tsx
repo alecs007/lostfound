@@ -100,12 +100,23 @@ export const SearchProvider = ({ children }: SearchProviderProps) => {
             "Content-Type": "application/json",
           },
         });
+        const responseData = await res.json();
 
         if (!res.ok) {
-          throw new Error(`Search failed: ${res.status}`);
-        }
+          if (
+            responseData?.code === "VALIDATION_ERROR" &&
+            responseData.errors?.length
+          ) {
+            const messages = responseData.errors
+              .map((e: { field: string; message: string }) => `${e.message}`)
+              .join(", ");
+            throw new Error(messages);
+          }
 
-        const responseData: SearchResponse = await res.json();
+          throw new Error(
+            responseData.message || `Search failed: ${res.status}`
+          );
+        }
 
         if (skip === 0) {
           setSearchResults(responseData.posts);

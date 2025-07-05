@@ -5,7 +5,11 @@ const toNumberOrUndefined = (v: unknown) =>
 
 export const searchSchema = z
   .object({
-    query: z.string().trim().optional(),
+    query: z
+      .string()
+      .trim()
+      .max(100, "Căutarea trebuie sa aibă cel mult 100 caractere")
+      .optional(),
     category: z.string().optional(),
 
     status: z
