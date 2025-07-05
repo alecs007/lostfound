@@ -38,9 +38,10 @@
     align-items: center;
     width: 100%;
     aspect-ratio: 1/1;
-    border: 1px solid #2c3e606c;
+    border: 1px solid #2c3e6031;
     border-radius: 50% 60% 50% 60% / 60% 50% 60% 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease-in-out;
   }
   .image {
     width: 55%;
@@ -59,7 +60,7 @@
   transform: scale(1.05);
 }
 .category:hover .imagecontainer {
-  border: 1px solid var(--blue);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .category:hover .text {
   opacity: 1;
