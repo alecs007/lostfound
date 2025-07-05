@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.scss";
 import { AuthProvider } from "@/context/AuthContext";
 import { PostsProvider } from "@/context/PostsContext";
+import { SearchProvider } from "@/context/SearchContext";
 import Header from "./components/Header/Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -34,13 +35,15 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
           <PostsProvider>
-            <Header />
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              style={{ marginTop: "70px" }}
-            />
-            {children}
+            <SearchProvider>
+              <Header />
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                style={{ marginTop: "70px" }}
+              />
+              {children}
+            </SearchProvider>
           </PostsProvider>
         </AuthProvider>
       </body>

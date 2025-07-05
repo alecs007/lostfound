@@ -1,5 +1,7 @@
 import styles from "./Categories.module.scss";
 import Image from "next/image";
+import Link from "next/link";
+
 export const categories = [
   {
     name: "Animale",
@@ -51,12 +53,18 @@ export const categories = [
   },
 ];
 export default function Categories() {
+  const normalizeCategoryName = (name: string) =>
+    name.toLowerCase().replace(" ", "-");
   return (
     <section className={styles.categories}>
       <h2>Categorii</h2>
       <div className={styles.categoriescontainer}>
         {categories.map((category) => (
-          <div className={styles.category} key={category.name}>
+          <Link
+            href={`/${normalizeCategoryName(category.name)}/search`}
+            className={styles.category}
+            key={category.name}
+          >
             <div className={styles.imagecontainer}>
               <div className={styles.image}>
                 <Image
@@ -71,7 +79,7 @@ export default function Categories() {
             <div className={styles.text}>
               <p>{category.name}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

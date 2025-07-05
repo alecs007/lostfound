@@ -1,4 +1,4 @@
-.container {
+.form {
   height: fit-content;
   width: 100%;
   display: flex;
@@ -38,6 +38,13 @@
   button:hover {
     background-color: #f57a4e;
   }
+}
+.container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .inputbox {
   width: 100%;

@@ -4,6 +4,7 @@ import styles from "./SearchInput.module.scss";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 type Suggestion = {
   display_name: string;
@@ -11,23 +12,82 @@ type Suggestion = {
   lon: string;
 };
 
-export default function SearchInput() {
-  const [query, setQuery] = useState("");
+interface SearchInputProps {
+  query?: string;
+  setQuery?: (query: string) => void;
+  locationQuery?: string;
+  setLocationQuery?: (location: string) => void;
+  selectedCoords?: { lat: number; lon: number } | null;
+  setSelectedCoords?: (coords: { lat: number; lon: number } | null) => void;
+  distanceSelected?: number;
+  setDistanceSelected?: (distance: number) => void;
+  periodSelected?: number | null;
+  setPeriodSelected?: (period: number | null) => void;
+  hideSubmitButton?: boolean;
+  onSubmit?: () => void;
+  category?: string;
+  postsCount?: number;
+}
 
-  const [locationQuery, setLocationQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [selectedCoords, setSelectedCoords] = useState<{
+export default function SearchInput({
+  query: propQuery,
+  setQuery: propSetQuery,
+  locationQuery: propLocationQuery,
+  setLocationQuery: propSetLocationQuery,
+  selectedCoords: propSelectedCoords,
+  setSelectedCoords: propSetSelectedCoords,
+  distanceSelected: propDistanceSelected,
+  setDistanceSelected: propSetDistanceSelected,
+  periodSelected: propPeriodSelected,
+  setPeriodSelected: propSetPeriodSelected,
+  hideSubmitButton = false,
+  onSubmit,
+  category,
+  postsCount = 1021,
+}: SearchInputProps) {
+  const router = useRouter();
+
+  const [internalQuery, setInternalQuery] = useState("");
+  const [internalLocationQuery, setInternalLocationQuery] = useState("");
+  const [internalSelectedCoords, setInternalSelectedCoords] = useState<{
     lat: number;
     lon: number;
   } | null>(null);
+  const [internalDistanceSelected, setInternalDistanceSelected] = useState(1);
+  const [internalPeriodSelected, setInternalPeriodSelected] = useState<
+    number | null
+  >(null);
+
+  const query = propQuery !== undefined ? propQuery : internalQuery;
+  const setQuery = propSetQuery || setInternalQuery;
+  const locationQuery =
+    propLocationQuery !== undefined ? propLocationQuery : internalLocationQuery;
+  const setLocationQuery = propSetLocationQuery || setInternalLocationQuery;
+  const selectedCoords =
+    propSelectedCoords !== undefined
+      ? propSelectedCoords
+      : internalSelectedCoords;
+  const setSelectedCoords = propSetSelectedCoords || setInternalSelectedCoords;
+  const distanceSelected =
+    propDistanceSelected !== undefined
+      ? propDistanceSelected
+      : internalDistanceSelected;
+  const setDistanceSelected =
+    propSetDistanceSelected || setInternalDistanceSelected;
+  const periodSelected =
+    propPeriodSelected !== undefined
+      ? propPeriodSelected
+      : internalPeriodSelected;
+  const setPeriodSelected = propSetPeriodSelected || setInternalPeriodSelected;
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [hasSelected, setHasSelected] = useState(false);
-
-  const [distanceSelected, setDistanceSelected] = useState(1);
   const [distanceOpen, setDistanceOpen] = useState(false);
-  const distanceOptions = [1, 2, 5, 10, 20, 30, 50];
-
-  const [periodSelected, setPeriodSelected] = useState<number | null>(null);
   const [periodOpen, setPeriodOpen] = useState(false);
+
+  const [initialSelected, setInitialSelected] = useState(false);
+
+  const distanceOptions = [1, 2, 5, 10, 20, 30, 50];
   const periodOptions = [null, 1, 2, 6, 12];
   const periods = [
     { id: null, name: "Orice perioadă" },
@@ -41,7 +101,7 @@ export default function SearchInput() {
   const periodSelectRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const handleOutsideClick = (event: MouseEvent) => {
+  const handleOutsideClick = useCallback((event: MouseEvent) => {
     if (
       distanceSelectRef.current &&
       !distanceSelectRef.current.contains(event.target as Node)
@@ -60,16 +120,22 @@ export default function SearchInput() {
     ) {
       setSuggestions([]);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick);
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, []);
+  }, [handleOutsideClick]);
 
   const fetchSuggestions = useCallback(async () => {
+    if (initialSelected === false) return;
+    if (!locationQuery || locationQuery.length <= 1) {
+      setSuggestions([]);
+      return;
+    }
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/geo/search?q=${encodeURIComponent(
@@ -82,16 +148,20 @@ export default function SearchInput() {
           },
         }
       );
-      const data = await res.json();
+
       if (!res.ok) {
+        const data = await res.json();
         toast.error(data.error || `Eroare ${res.status}`);
         return;
       }
+
+      const data = await res.json();
       setSuggestions(data);
     } catch (err) {
       console.error("Failed to fetch location suggestions:", err);
+      toast.error("Eroare la încărcarea sugestiilor de locație");
     }
-  }, [locationQuery]);
+  }, [locationQuery, initialSelected]);
 
   useEffect(() => {
     if (hasSelected) return;
@@ -105,7 +175,7 @@ export default function SearchInput() {
     }, 300);
 
     return () => clearTimeout(delayDebounce);
-  }, [locationQuery, fetchSuggestions, hasSelected]);
+  }, [locationQuery, fetchSuggestions, hasSelected, initialSelected]);
 
   function highlightMatch(text: string, query: string) {
     if (!query) return text;
@@ -160,187 +230,254 @@ export default function SearchInput() {
     );
   }
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (onSubmit) {
+      onSubmit();
+    } else {
+      const searchParams = new URLSearchParams();
+
+      if (query) searchParams.set("query", query);
+      if (locationQuery) searchParams.set("location", locationQuery);
+      if (selectedCoords) {
+        searchParams.set("lat", selectedCoords.lat.toString());
+        searchParams.set("lon", selectedCoords.lon.toString());
+
+        if (distanceSelected) {
+          searchParams.set("radius", distanceSelected.toString());
+        }
+      }
+      if (periodSelected) searchParams.set("period", periodSelected.toString());
+      if (category) searchParams.set("category", category);
+
+      router.push(`/search?${searchParams.toString()}`);
+    }
+  };
+
+  const handleClearQuery = () => {
+    setQuery("");
+  };
+
+  const handleClearLocation = () => {
+    setLocationQuery("");
+    setSelectedCoords(null);
+    setHasSelected(false);
+  };
+
+  const handleSuggestionClick = (suggestion: Suggestion) => {
+    setLocationQuery(suggestion.display_name);
+    setSelectedCoords({
+      lat: parseFloat(suggestion.lat),
+      lon: parseFloat(suggestion.lon),
+    });
+    setSuggestions([]);
+    setHasSelected(true);
+  };
+
+  const handleDistanceSelect = (distance: number) => {
+    setDistanceSelected(distance);
+    setDistanceOpen(false);
+  };
+
+  const handlePeriodSelect = (period: number | null) => {
+    setPeriodSelected(period);
+    setPeriodOpen(false);
+  };
+
+  useEffect(() => {
+    if (locationQuery && !initialSelected) {
+      setInitialSelected(true);
+    }
+  }, [locationQuery, initialSelected]);
+
   return (
-    <section
-      className={styles.container}
-      aria-label="Formular de căutare anunțuri"
-    >
-      <div className={styles.inputbox}>
-        <label className={styles.hidden} htmlFor="query">
-          Ce anume cauți?
-        </label>
-        <input
-          type="text"
-          name="query"
-          id="query"
-          placeholder="Ce anume cauți?"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ paddingRight: "38px" }}
-          aria-label="Ce anume cauți?"
-        />
-        {query && (
-          <span
-            className={styles.clear}
-            onClick={() => setQuery("")}
-            style={{ right: "15px" }}
-          >
-            ✕
-          </span>
-        )}
-      </div>
-      <div className={styles.inputbox} ref={searchRef}>
-        <Image
-          src="/icons/location_pin.svg"
-          alt="Pictogramă locație pentru câmpul de localitate"
-          width={25}
-          height={25}
-          className={styles.icon}
-          draggable={false}
-        />
-        {locationQuery && (
-          <span
-            className={styles.clear}
-            onClick={() => setLocationQuery("")}
-            style={{ right: "115px" }}
-          >
-            ✕
-          </span>
-        )}
-        <label className={styles.hidden} htmlFor="location">
-          În ce loc cauți?
-        </label>
-        <input
-          type="text"
-          name="location"
-          id="location"
-          placeholder="În ce loc cauți?"
-          value={locationQuery}
-          onChange={(e) => {
-            setLocationQuery(e.target.value);
-            setHasSelected(false);
-          }}
-          style={{ paddingRight: "138px", paddingLeft: "42px" }}
-          aria-label="În ce loc cauți?"
-        />
-        <ul
-          className={`${styles.suggestionlist} ${
-            suggestions.length ? "" : styles.hidden
-          }`}
-          role="listbox"
-          aria-live="polite"
-        >
-          {suggestions.map((s, i) => (
-            <li
-              key={i}
-              onClick={() => {
-                setLocationQuery(s.display_name);
-                setSelectedCoords({
-                  lat: parseFloat(s.lat),
-                  lon: parseFloat(s.lon),
-                });
-                setSuggestions([]);
-                setHasSelected(true);
-              }}
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <section
+        className={styles.container}
+        aria-label="Formular de căutare anunțuri"
+      >
+        <div className={styles.inputbox}>
+          <label className={styles.hidden} htmlFor="query">
+            Ce anume cauți?
+          </label>
+          <input
+            type="text"
+            name="query"
+            id="query"
+            placeholder="Ce anume cauți?"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{ paddingRight: query ? "38px" : "13px" }}
+            aria-label="Ce anume cauți?"
+          />
+          {query && (
+            <span
+              className={styles.clear}
+              onClick={handleClearQuery}
+              style={{ right: "15px" }}
+              role="button"
+              aria-label="Șterge textul de căutare"
             >
-              {highlightMatch(s.display_name, locationQuery)}
-            </li>
-          ))}
-        </ul>
-        {/* {selectedCoords && (
-          <div>
-            <p>lat: {selectedCoords.lat}</p>
-            <p>lon: {selectedCoords.lon}</p>
-          </div>
-        )} */}
-        <div className={styles.select_wrapper} ref={distanceSelectRef}>
-          <div
-            className={styles.select}
-            onClick={() => setDistanceOpen(!distanceOpen)}
-          >
-            <div className={styles.selected}>
-              <p> + {distanceSelected} km </p>
-              <span>{distanceOpen ? "▲" : "▼"}</span>
-            </div>
-            {distanceOpen && (
-              <ul className={styles.options}>
-                {distanceOptions.map((opt) => (
-                  <li
-                    key={opt}
-                    onClick={() => setDistanceSelected(opt)}
-                    className={`${
-                      opt === distanceSelected ? styles.selectedoption : ""
-                    }`}
-                  >
-                    + {opt} km
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+              ✕
+            </span>
+          )}
         </div>
-      </div>
-      <div className={styles.inputbox}>
-        <Image
-          src="/icons/calendar.svg"
-          alt="Pictogramă calendar pentru selectarea perioadei"
-          width={25}
-          height={25}
-          className={styles.icon}
-          draggable={false}
-        />
-        <label className={styles.hidden} htmlFor="period">
-          Perioada
-        </label>
-        <input
-          type="text"
-          name="period"
-          id="period"
-          placeholder="Perioada"
-          disabled={true}
-          style={{ paddingLeft: "42px" }}
-          aria-label="Perioada"
-        />
-        <div
-          className={styles.select_wrapper}
-          style={{ width: "50%" }}
-          ref={periodSelectRef}
-        >
-          <div
-            className={styles.select}
-            onClick={() => {
-              setPeriodOpen(!periodOpen);
-              setDistanceOpen(false);
+
+        <div className={styles.inputbox} ref={searchRef}>
+          <Image
+            src="/icons/location_pin.svg"
+            alt="Pictogramă locație pentru câmpul de localitate"
+            width={25}
+            height={25}
+            className={styles.icon}
+            draggable={false}
+          />
+          {locationQuery && (
+            <span
+              className={styles.clear}
+              onClick={handleClearLocation}
+              style={{ right: "115px" }}
+              role="button"
+              aria-label="Șterge locația"
+            >
+              ✕
+            </span>
+          )}
+          <label className={styles.hidden} htmlFor="location">
+            În ce loc cauți?
+          </label>
+          <input
+            type="text"
+            name="location"
+            id="location"
+            placeholder="În ce loc cauți?"
+            value={locationQuery}
+            onChange={(e) => {
+              setLocationQuery(e.target.value);
+              setHasSelected(false);
             }}
+            style={{ paddingRight: "138px", paddingLeft: "42px" }}
+            aria-label="În ce loc cauți?"
+          />
+          <ul
+            className={`${styles.suggestionlist} ${
+              suggestions.length && !hasSelected ? "" : styles.hidden
+            }`}
+            role="listbox"
+            aria-live="polite"
           >
-            <div className={styles.selected}>
-              <p>{periods.find((p) => p.id === periodSelected)?.name}</p>
-              <span>{periodOpen ? "▲" : "▼"}</span>
+            {suggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion)}
+                role="option"
+                aria-selected={false}
+              >
+                {highlightMatch(suggestion.display_name, locationQuery)}
+              </li>
+            ))}
+          </ul>
+
+          <div className={styles.select_wrapper} ref={distanceSelectRef}>
+            <div
+              className={styles.select}
+              onClick={() => setDistanceOpen(!distanceOpen)}
+              role="button"
+              aria-label="Selectează distanța"
+            >
+              <div className={styles.selected}>
+                <p> + {distanceSelected} km </p>
+                <span>{distanceOpen ? "▲" : "▼"}</span>
+              </div>
+              {distanceOpen && (
+                <ul className={styles.options} role="listbox">
+                  {distanceOptions.map((option) => (
+                    <li
+                      key={option}
+                      onClick={() => handleDistanceSelect(option)}
+                      className={`${
+                        option === distanceSelected ? styles.selectedoption : ""
+                      }`}
+                      role="option"
+                      aria-selected={option === distanceSelected}
+                    >
+                      + {option} km
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            {periodOpen && (
-              <ul className={styles.options}>
-                {periodOptions.map((opt: number | null) => (
-                  <li
-                    key={opt}
-                    onClick={() => {
-                      setPeriodSelected(opt);
-                      setPeriodOpen(false);
-                    }}
-                    className={`${
-                      opt === periodSelected ? styles.selectedoption : ""
-                    }`}
-                  >
-                    {periods.find((p) => p.id === opt)?.name}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         </div>
-      </div>
-      <button type="submit" aria-label="Caută în anunțuri">
-        Vezi 1021 postări
-      </button>
-    </section>
+
+        <div className={styles.inputbox}>
+          <Image
+            src="/icons/calendar.svg"
+            alt="Pictogramă calendar pentru selectarea perioadei"
+            width={25}
+            height={25}
+            className={styles.icon}
+            draggable={false}
+          />
+          <label className={styles.hidden} htmlFor="period">
+            Perioada
+          </label>
+          <input
+            type="text"
+            name="period"
+            id="period"
+            placeholder="Perioada"
+            disabled={true}
+            style={{ paddingLeft: "42px" }}
+            aria-label="Perioada"
+          />
+
+          <div
+            className={styles.select_wrapper}
+            style={{ width: "50%" }}
+            ref={periodSelectRef}
+          >
+            <div
+              className={styles.select}
+              onClick={() => {
+                setPeriodOpen(!periodOpen);
+                setDistanceOpen(false);
+              }}
+              role="button"
+              aria-label="Selectează perioada"
+            >
+              <div className={styles.selected}>
+                <p>{periods.find((p) => p.id === periodSelected)?.name}</p>
+                <span>{periodOpen ? "▲" : "▼"}</span>
+              </div>
+              {periodOpen && (
+                <ul className={styles.options} role="listbox">
+                  {periodOptions.map((option: number | null) => (
+                    <li
+                      key={option}
+                      onClick={() => handlePeriodSelect(option)}
+                      className={`${
+                        option === periodSelected ? styles.selectedoption : ""
+                      }`}
+                      role="option"
+                      aria-selected={option === periodSelected}
+                    >
+                      {periods.find((p) => p.id === option)?.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {!hideSubmitButton && (
+          <button type="submit" aria-label="Caută în anunțuri">
+            Vezi {postsCount} postări
+          </button>
+        )}
+      </section>
+    </form>
   );
 }

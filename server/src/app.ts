@@ -10,6 +10,7 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import geoRoutes from "./routes/geo.routes";
 import postRoutes from "./routes/post.routes";
+import searchRoutes from "./routes/search.routes";
 import commentRoutes from "./routes/comment.routes";
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(`${config.BASE_PATH}/user`, userRoutes);
 app.use(`${config.BASE_PATH}/geo`, geoRoutes);
 app.use(`${config.BASE_PATH}/post`, postRoutes);
 app.use(`${config.BASE_PATH}/comment`, commentRoutes);
+app.use(`${config.BASE_PATH}/search`, searchRoutes);
 
 app.use(handleMulterError);
 
