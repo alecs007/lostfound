@@ -10,7 +10,6 @@ export default function Loader() {
         width={200}
         height={200}
         unoptimized
-        priority
         draggable={false}
       />
       <p>Se încarcă...</p>

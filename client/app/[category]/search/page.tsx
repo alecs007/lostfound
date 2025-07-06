@@ -1,12 +1,11 @@
-// app/[category]/search/page.tsx
 import SearchPage from "../../components/SearchPage/SearchPage";
+import { use } from "react";
 
-interface Props {
-  params: {
-    category: string;
-  };
-}
-
-export default function CategorySearchPage({ params }: Props) {
-  return <SearchPage category={params.category} />;
+export default function CategorySearchPage({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) {
+  const { category } = use(params);
+  return <SearchPage category={category} />;
 }

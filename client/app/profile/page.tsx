@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./page.module.scss";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -8,9 +9,12 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader/Loader";
-import UserPosts from "../components/UserPosts/UserPosts";
 import ProfileImageModal from "../components/ProfileImageModal/ProfileImageModal";
 import { usePosts } from "@/context/PostsContext";
+
+const UserPosts = dynamic(() => import("../components/UserPosts/UserPosts"), {
+  ssr: false,
+});
 
 type PasswordErrors = {
   oldPassword?: string;

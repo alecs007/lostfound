@@ -256,7 +256,7 @@ export default function SearchPage({ category }: SearchPageProps) {
 
   return (
     <main className={styles.searchpage}>
-      <div className={styles.container}>
+      <section className={styles.container}>
         <div className={styles.searchheader}>
           {category && (
             <h1 className={styles.categorytitle}>
@@ -292,6 +292,7 @@ export default function SearchPage({ category }: SearchPageProps) {
                       alt="Check Icon"
                       width={22}
                       height={22}
+                      draggable={false}
                     />
                   </div>
                 )}
@@ -310,6 +311,7 @@ export default function SearchPage({ category }: SearchPageProps) {
                       alt="Check Icon"
                       width={22}
                       height={22}
+                      draggable={false}
                     />
                   </div>
                 )}
@@ -325,6 +327,7 @@ export default function SearchPage({ category }: SearchPageProps) {
                 alt="Loader Gif"
                 width={130}
                 height={130}
+                draggable={false}
               />
             </div>
           ) : loading && searchResults.length === 0 ? (
@@ -334,6 +337,7 @@ export default function SearchPage({ category }: SearchPageProps) {
                 alt="Loader Gif"
                 width={130}
                 height={130}
+                draggable={false}
               />
             </div>
           ) : (
@@ -350,8 +354,8 @@ export default function SearchPage({ category }: SearchPageProps) {
               </div>
 
               <div className={styles.resultscontainer}>
-                {searchResults.map((post) => (
-                  <PostCard key={post._id} post={post} />
+                {searchResults.map((post, idx) => (
+                  <PostCard key={post._id} post={post} priority={idx < 4} />
                 ))}
               </div>
 
@@ -369,7 +373,7 @@ export default function SearchPage({ category }: SearchPageProps) {
             </>
           )}
         </div>
-      </div>
+      </section>
     </main>
   );
 }

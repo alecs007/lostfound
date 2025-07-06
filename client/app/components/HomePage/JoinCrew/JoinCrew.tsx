@@ -9,7 +9,7 @@ export default function JoinCrew() {
           src="/images/crew.webp"
           alt="Crew"
           fill
-          sizes="100%"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           draggable={false}
         />
       </div>

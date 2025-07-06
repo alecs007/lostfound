@@ -205,7 +205,7 @@ export default function LoginForm() {
           src="/images/signin_image.avif"
           alt="Login Image"
           fill
-          sizes="100%"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority
           draggable={false}
         />

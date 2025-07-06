@@ -21,7 +21,13 @@ function getStatusColor(status: string): string {
   }
 }
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({
+  post,
+  priority = false,
+}: {
+  post: Post;
+  priority?: boolean;
+}) {
   return (
     <Link href={`/post/${post._id}`} className={styles.anunt}>
       <div className={styles.postimage}>
@@ -32,7 +38,7 @@ export default function PostCard({ post }: { post: Post }) {
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: "cover" }}
-            priority
+            priority={priority}
           />
         )}
         {post.promoted.isActive && (

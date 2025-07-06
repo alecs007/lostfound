@@ -16,7 +16,7 @@ export default function Hero() {
               src="/images/slogan.webp"
               alt="Logo Icon"
               fill
-              sizes="100%"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority
               draggable={false}
             />
@@ -31,7 +31,7 @@ export default function Hero() {
                 src="/images/oameni_fericiti.webp"
                 alt="Oameni Fericiti"
                 fill
-                sizes="100%"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
                 draggable={false}
               />
@@ -42,7 +42,12 @@ export default function Hero() {
         </div>
         <div className={styles.input}>
           <div className={styles.adcontainer}>
-            <Image src="/images/publicitate.png" alt="Publicitate" fill />
+            <Image
+              src="/images/publicitate.png"
+              alt="Publicitate"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
           <SearchInput />
         </div>

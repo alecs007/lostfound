@@ -10,7 +10,7 @@ export default function Section1() {
             src="/images/pros1.webp"
             alt="Găsește rapid oriunde în România"
             fill
-            sizes="100%"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority
             draggable={false}
           />
@@ -20,7 +20,7 @@ export default function Section1() {
             src="/images/pros3.webp"
             alt="#1 cea mai mare bază de date"
             fill
-            sizes="100%"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority
             draggable={false}
           />
@@ -30,7 +30,7 @@ export default function Section1() {
             src="/images/pros2.webp"
             alt="Postează gratuit și noi te vom ajuta"
             fill
-            sizes="100%"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority
             draggable={false}
           />

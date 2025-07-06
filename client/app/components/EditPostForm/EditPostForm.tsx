@@ -664,7 +664,7 @@ export default function EditPostForm() {
                     <div key={url} className={styles.imagepreview}>
                       <Image
                         src={url}
-                        alt="prev"
+                        alt="Preview Image"
                         width={100}
                         height={100}
                         style={{ objectFit: "cover", borderRadius: 5 }}
@@ -685,7 +685,7 @@ export default function EditPostForm() {
                       <div key={url} className={styles.imagepreview}>
                         <Image
                           src={url}
-                          alt="new"
+                          alt="New Image"
                           width={100}
                           height={100}
                           style={{ objectFit: "cover", borderRadius: 5 }}
@@ -751,7 +751,7 @@ export default function EditPostForm() {
                             src={cat.image}
                             alt={cat.name}
                             fill
-                            sizes="100%"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             draggable={false}
                           />
                         </div>

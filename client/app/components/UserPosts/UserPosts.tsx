@@ -92,6 +92,21 @@ export default function UserPosts() {
     setSolveOpen(false);
   };
 
+  if (loading)
+    return (
+      <div className={styles.loader}>
+        <Image
+          src="/gifs/loading.gif"
+          alt="Loader Gif"
+          width={130}
+          height={130}
+          unoptimized
+          draggable={false}
+        />
+        .
+      </div>
+    );
+
   if (userPosts.length === 0) {
     return (
       <div className={styles.emptyposts}>
@@ -182,7 +197,7 @@ export default function UserPosts() {
                           alt={`Imagine ${i}`}
                           fill
                           className={styles.image}
-                          sizes="100%"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           priority={i === 0}
                         />
                       </figure>

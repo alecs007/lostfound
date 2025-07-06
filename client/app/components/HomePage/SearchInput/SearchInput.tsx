@@ -85,7 +85,7 @@ export default function SearchInput({
   const [distanceOpen, setDistanceOpen] = useState(false);
   const [periodOpen, setPeriodOpen] = useState(false);
 
-  const [initialSelected, setInitialSelected] = useState(false);
+  const userHasEditedLocation = useRef(false);
 
   const distanceOptions = [1, 2, 5, 10, 20, 30, 50];
   const periodOptions = [null, 1, 2, 6, 12];
@@ -130,7 +130,7 @@ export default function SearchInput({
   }, [handleOutsideClick]);
 
   const fetchSuggestions = useCallback(async () => {
-    if (initialSelected === false) return;
+    if (!userHasEditedLocation.current) return;
     if (!locationQuery || locationQuery.length <= 1) {
       setSuggestions([]);
       return;
@@ -161,7 +161,7 @@ export default function SearchInput({
       console.error("Failed to fetch location suggestions:", err);
       toast.error("Eroare la încărcarea sugestiilor de locație");
     }
-  }, [locationQuery, initialSelected]);
+  }, [locationQuery]);
 
   useEffect(() => {
     if (hasSelected) return;
@@ -175,7 +175,7 @@ export default function SearchInput({
     }, 300);
 
     return () => clearTimeout(delayDebounce);
-  }, [locationQuery, fetchSuggestions, hasSelected, initialSelected]);
+  }, [locationQuery, fetchSuggestions, hasSelected]);
 
   function highlightMatch(text: string, query: string) {
     if (!query) return text;
@@ -285,12 +285,6 @@ export default function SearchInput({
     setPeriodOpen(false);
   };
 
-  useEffect(() => {
-    if (locationQuery && !initialSelected) {
-      setInitialSelected(true);
-    }
-  }, [locationQuery, initialSelected]);
-
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <section
@@ -354,6 +348,7 @@ export default function SearchInput({
             placeholder="În ce loc cauți?"
             value={locationQuery}
             onChange={(e) => {
+              userHasEditedLocation.current = true;
               setLocationQuery(e.target.value);
               setHasSelected(false);
             }}

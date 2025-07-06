@@ -12,11 +12,21 @@ import "./toast.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "optional",
+  fallback: ["sans-serif", "system-ui", "ui-sans-serif"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  preload: true,
+  adjustFontFallback: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "optional",
+  fallback: ["sans-serif", "system-ui", "ui-sans-serif"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  preload: true,
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {

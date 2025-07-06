@@ -57,7 +57,12 @@ export default async function AnunturiPromovate() {
       </div>
 
       <div className={styles.adcontainer}>
-        <Image src="/images/publicitate.png" alt="Publicitate" fill />
+        <Image
+          src="/images/publicitate.png"
+          alt="Publicitate"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       </div>
 
       <div className={styles.anunturi}>
@@ -73,7 +78,12 @@ export default async function AnunturiPromovate() {
       </div>
 
       <div className={styles.adcontainer}>
-        <Image src="/images/publicitate.png" alt="Publicitate" fill />
+        <Image
+          src="/images/publicitate.png"
+          alt="Publicitate"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       </div>
     </section>
   );
