@@ -62,7 +62,6 @@ export default function SearchPage({ category, page }: SearchPageProps) {
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
 
-  // DEBUG: Add logging
   console.log("SearchPage rendered with:", {
     category,
     page,
@@ -70,7 +69,6 @@ export default function SearchPage({ category, page }: SearchPageProps) {
     totalPages,
   });
 
-  // Fixed URL building function
   const updateURL = useCallback(
     (filters: SearchFilters, pageNum: number = 1) => {
       console.log("updateURL called with:", { filters, pageNum });
@@ -93,7 +91,6 @@ export default function SearchPage({ category, page }: SearchPageProps) {
         params.set("status", filters.status.join(","));
       }
 
-      // Fixed URL building logic
       let newURL = "/search";
 
       if (category) {
@@ -348,7 +345,6 @@ export default function SearchPage({ category, page }: SearchPageProps) {
   const goToPage = (pageNum: number) => {
     if (pageNum === currentPage || pageNum < 1 || pageNum > totalPages) return;
 
-    // Build filters from the *current* UI state
     const filters: SearchFilters = {};
     if (query.trim()) filters.query = query.trim();
     if (category) filters.category = normalizedCategory;
@@ -364,96 +360,65 @@ export default function SearchPage({ category, page }: SearchPageProps) {
     }
     if (periodSelected) filters.period = periodSelected;
 
-    // Update the URL → triggers a remount → only ONE fetch in the new page
     updateURL(filters, pageNum);
   };
 
   const renderPaginationButtons = () => {
-    const buttons = [];
-    const showEllipsis = totalPages > 7;
+    const pages = new Set<number>();
+    const add = (p: number) => {
+      if (p >= 1 && p <= totalPages) pages.add(p);
+    };
 
-    if (showEllipsis) {
-      // Show first page
-      buttons.push(
-        <button
-          key={1}
-          onClick={() => goToPage(1)}
-          className={`${styles.pageButton} ${
-            currentPage === 1 ? styles.active : ""
-          }`}
-        >
-          1
-        </button>
-      );
+    // extremities + current
+    add(1);
+    add(totalPages);
+    add(currentPage);
 
-      // Show ellipsis if needed
-      if (currentPage > 4) {
-        buttons.push(
-          <span key="ellipsis1" className={styles.ellipsis}>
-            ...
-          </span>
-        );
-      }
+    // neighbours
+    add(currentPage - 1);
+    add(currentPage + 1);
 
-      // Show pages around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        buttons.push(
-          <button
-            key={i}
-            onClick={() => goToPage(i)}
-            className={`${styles.pageButton} ${
-              currentPage === i ? styles.active : ""
-            }`}
-          >
-            {i}
-          </button>
-        );
-      }
-
-      // Show ellipsis if needed
-      if (currentPage < totalPages - 3) {
-        buttons.push(
-          <span key="ellipsis2" className={styles.ellipsis}>
-            ...
-          </span>
-        );
-      }
-
-      // Show last page
-      if (totalPages > 1) {
-        buttons.push(
-          <button
-            key={totalPages}
-            onClick={() => goToPage(totalPages)}
-            className={`${styles.pageButton} ${
-              currentPage === totalPages ? styles.active : ""
-            }`}
-          >
-            {totalPages}
-          </button>
-        );
-      }
-    } else {
-      // Show all pages if total pages <= 7
-      for (let i = 1; i <= totalPages; i++) {
-        buttons.push(
-          <button
-            key={i}
-            onClick={() => goToPage(i)}
-            className={`${styles.pageButton} ${
-              currentPage === i ? styles.active : ""
-            }`}
-          >
-            {i}
-          </button>
-        );
-      }
+    // near‑start block
+    if (currentPage <= 2) {
+      add(2);
+      add(3);
+      add(totalPages - 1); // only added if it exists (≥ 1 and ≤ totalPages)
     }
 
-    return buttons;
+    // near‑end block
+    if (currentPage >= totalPages - 1) {
+      add(totalPages - 3);
+      add(totalPages - 2);
+      add(totalPages - 1);
+    }
+
+    // 5. Turn the set into a sorted array
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+
+    /* 6. Convert to buttons + ellipses ----------------------------------- */
+    const items: (number | "...")[] = [];
+    sorted.forEach((p, idx) => {
+      if (idx && p - sorted[idx - 1] > 1) items.push("...");
+      items.push(p);
+    });
+
+    return items.map((el, idx) =>
+      el === "..." ? (
+        <span key={`ellipsis-${idx}`} className={styles.ellipsis}>
+          …
+        </span>
+      ) : (
+        <button
+          key={el}
+          onClick={() => goToPage(el as number)}
+          className={`${styles.pagebutton} ${
+            currentPage === el ? styles.active : ""
+          }`}
+        >
+          {el}
+        </button>
+      )
+    );
   };
 
   // if (isInitializing || loading || !searchResults) {
@@ -558,7 +523,7 @@ export default function SearchPage({ category, page }: SearchPageProps) {
                   {totalCount > 1 && `${totalCount} rezultate`}
                 </h2>
                 {totalCount > 0 && (
-                  <p className={styles.pageInfo}>
+                  <p className={styles.pageinfo}>
                     Pagina {currentPage} din {totalPages}
                   </p>
                 )}
@@ -575,19 +540,19 @@ export default function SearchPage({ category, page }: SearchPageProps) {
                   <button
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={!hasPrevPage || loading}
-                    className={`${styles.paginationButton} ${styles.prevNext}`}
+                    className={`${styles.paginationbutton} ${styles.prevnext}`}
                   >
                     ← Anterior
                   </button>
 
-                  <div className={styles.pageNumbers}>
+                  <div className={styles.pagenumbers}>
                     {renderPaginationButtons()}
                   </div>
 
                   <button
                     onClick={() => goToPage(currentPage + 1)}
                     disabled={!hasNextPage || loading}
-                    className={`${styles.paginationButton} ${styles.prevNext}`}
+                    className={`${styles.paginationbutton} ${styles.prevnext}`}
                   >
                     Următor →
                   </button>

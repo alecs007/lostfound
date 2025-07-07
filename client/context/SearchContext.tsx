@@ -117,7 +117,6 @@ export const SearchProvider = ({ children }: SearchProviderProps) => {
           );
         }
 
-        // Always replace results for pagination (no appending)
         setSearchResults(responseData.posts);
         setTotalCount(responseData.totalCount);
         setLoading(false);
