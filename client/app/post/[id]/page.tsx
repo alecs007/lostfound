@@ -10,6 +10,7 @@ import Image from "next/image";
 import CommentItem from "../../components/PostPage/CommentItem/CommentItem";
 import CommentsHeader from "@/app/components/PostPage/CommentsHeader/CommentsHeader";
 import ContactButton from "@/app/components/PostPage/ContactButton/ContactButton";
+import ShareButton from "@/app/components/PostPage/ShareButton/ShareButton";
 
 const PostMap = dynamic(
   () => import("../../components/PostPage/PostMap/PostMapWrapper")
@@ -144,20 +145,7 @@ export default async function PostPage({ params }: PageProps) {
                 className={styles.contact}
               />
             )}
-            <button
-              className={`${styles.secbutton} ${
-                post.status === "solved" && styles.large
-              }`}
-            >
-              <Image
-                src="/icons/share.svg"
-                alt="Share Icon"
-                width={20}
-                height={20}
-                draggable={false}
-              />
-              <p> Distribuie</p>
-            </button>
+            <ShareButton postId={post._id} className={styles.secbutton} />
             <button
               className={`${styles.secbutton} ${
                 post.status === "solved" && styles.large
