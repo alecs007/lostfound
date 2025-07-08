@@ -9,6 +9,7 @@ import UserLink from "@/app/components/PostPage/UserLink/UserLink";
 import Image from "next/image";
 import CommentItem from "../../components/PostPage/CommentItem/CommentItem";
 import CommentsHeader from "@/app/components/PostPage/CommentsHeader/CommentsHeader";
+import ContactButton from "@/app/components/PostPage/ContactButton/ContactButton";
 
 const PostMap = dynamic(
   () => import("../../components/PostPage/PostMap/PostMapWrapper")
@@ -136,16 +137,12 @@ export default async function PostPage({ params }: PageProps) {
           <h1 className={styles.title}>{post.title}</h1>
           <div className={styles.buttoncontainer}>
             {post.status != "solved" && (
-              <button className={styles.contact}>
-                <Image
-                  src="/icons/phone.svg"
-                  alt="Phone Icon"
-                  width={22}
-                  height={22}
-                  draggable={false}
-                />
-                Contactează
-              </button>
+              <ContactButton
+                postId={post._id}
+                email={post.email}
+                phone={post.phone}
+                className={styles.contact}
+              />
             )}
             <button
               className={`${styles.secbutton} ${

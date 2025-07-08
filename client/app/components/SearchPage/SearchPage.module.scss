@@ -158,54 +158,54 @@
     padding: 12px 0;
   }
 }
-.paginationbutton {
-  padding: 12px 24px;
-  border: 2px solid #e9ecef;
-  background: white;
-  color: #495057;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
+// .paginationbutton {
+//   padding: 12px 24px;
+//   border: 2px solid #e9ecef;
+//   background: white;
+//   color: #495057;
+//   border-radius: 8px;
+//   cursor: pointer;
+//   font-size: 14px;
+//   font-weight: 600;
+//   transition: all 0.3s ease;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 8px;
+//   min-height: 44px;
 
-  &:hover:not(:disabled) {
-    background: var(--blue, #2c3e60);
-    color: white;
-    border-color: var(--blue, #2c3e60);
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(44, 62, 96, 0.3);
-  }
+//   &:hover:not(:disabled) {
+//     background: var(--blue, #2c3e60);
+//     color: white;
+//     border-color: var(--blue, #2c3e60);
+//     transform: translateY(-2px);
+//     box-shadow: 0 2px 4px rgba(44, 62, 96, 0.3);
+//   }
 
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background: #f8f9fa;
-    color: #6c757d;
-    border-color: #e9ecef;
-  }
+//   &:disabled {
+//     opacity: 0.4;
+//     cursor: not-allowed;
+//     background: #f8f9fa;
+//     color: #6c757d;
+//     border-color: #e9ecef;
+//   }
 
-  &.prevnext {
-    padding: 12px 28px;
-    font-weight: 700;
-    border-radius: 25px;
+//   &.prevnext {
+//     padding: 12px 28px;
+//     font-weight: 700;
+//     border-radius: 25px;
 
-    @media (max-width: 768px) {
-      padding: 10px 20px;
-      font-size: 13px;
-    }
+//     @media (max-width: 768px) {
+//       padding: 10px 20px;
+//       font-size: 13px;
+//     }
 
-    @media (max-width: 480px) {
-      padding: 8px 16px;
-      font-size: 12px;
-    }
-  }
-}
+//     @media (max-width: 480px) {
+//       padding: 8px 16px;
+//       font-size: 12px;
+//     }
+//   }
+// }
 .pagenumbers {
   display: flex;
   align-items: center;
@@ -231,7 +231,6 @@
     background: #f8f9fa;
     border-color: #adb5bd;
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   &.active {
     background: var(--blue, #2c3e60);
