@@ -278,6 +278,8 @@ export async function getPostByID(req: Request, res: Response): Promise<void> {
   }
 }
 
+// Updated editPost function in your backend
+
 export async function editPost(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.user?.id;
@@ -323,6 +325,9 @@ export async function editPost(req: Request, res: Response): Promise<void> {
     const hasNewUploads =
       req.files && Array.isArray(req.files) && req.files.length > 0;
 
+    // Get original standard image from existing post
+    const originalStandardImage = existingPost.standardImage;
+
     let finalImageUrls: string[] = [...(existingPost.images || [])];
     const imagesToDelete: string[] = [];
 
@@ -342,6 +347,28 @@ export async function editPost(req: Request, res: Response): Promise<void> {
             imagesToDelete.push(imageUrl);
           }
         });
+      }
+    }
+
+    // Handle standard image changes
+    if (hasStandardImage) {
+      // If we're switching to a new standard image and there was an old one
+      if (
+        originalStandardImage &&
+        originalStandardImage !== req.body.standardImage.trim()
+      ) {
+        // Remove old standard image from images array if it exists
+        const oldStandardIndex = finalImageUrls.indexOf(originalStandardImage);
+        if (oldStandardIndex > -1) {
+          finalImageUrls.splice(oldStandardIndex, 1);
+          imagesToDelete.push(originalStandardImage);
+        }
+      }
+
+      // Clear any existing regular images when using standard image
+      if (finalImageUrls.length > 0) {
+        imagesToDelete.push(...finalImageUrls);
+        finalImageUrls = [];
       }
     }
 
@@ -373,7 +400,7 @@ export async function editPost(req: Request, res: Response): Promise<void> {
       }
     }
 
-    // Key logic: If we have uploaded images OR existing images, we shouldn't use standard image
+    // Key logic: If we have standard image, use it; otherwise use uploaded/existing images
     const shouldUseStandardImage =
       hasStandardImage && finalImageUrls.length === 0;
 
@@ -383,7 +410,7 @@ export async function editPost(req: Request, res: Response): Promise<void> {
     }
 
     // Check if we have at least one image (either uploaded or standard)
-    if (finalImageUrls.length === 0 && !shouldUseStandardImage) {
+    if (finalImageUrls.length === 0) {
       res.status(400).json({
         code: "MISSING_IMAGES",
         message: "Cel puțin o imagine este obligatorie",
@@ -401,9 +428,9 @@ export async function editPost(req: Request, res: Response): Promise<void> {
     // Delete old images from Cloudinary (if needed)
     if (imagesToDelete.length > 0) {
       try {
-        const deletePromises = imagesToDelete.map((imgUrl) =>
-          deleteImageFromCloudinary(imgUrl)
-        );
+        const deletePromises = imagesToDelete
+          .filter((imgUrl) => imgUrl !== req.body.standardImage?.trim()) // Don't delete the new standard image
+          .map((imgUrl) => deleteImageFromCloudinary(imgUrl));
         await Promise.allSettled(deletePromises);
       } catch (cloudinaryError) {
         console.error(

@@ -166,6 +166,11 @@ export default function EditPostForm() {
     clearError("images");
   };
 
+  const [originalStandardImage, setOriginalStandardImage] = useState<
+    string | null
+  >(null);
+
+  // Update the getPost function to track the original standard image
   const getPost = useCallback(async () => {
     if (!postId) return;
     setLoadingData(true);
@@ -188,6 +193,7 @@ export default function EditPostForm() {
       // Handle standard image properly
       const standardImg = p.standardImage || null;
       setStandardImage(standardImg);
+      setOriginalStandardImage(standardImg); // Track original
 
       // If there's a standard image, don't load any regular images
       // If there's no standard image, load the regular images
@@ -212,7 +218,6 @@ export default function EditPostForm() {
       setLoadingData(false);
     }
   }, [postId, getPostByID, router]);
-
   useEffect(() => {
     getPost();
   }, [getPost]);
@@ -303,6 +308,9 @@ export default function EditPostForm() {
       const usingUploadedImages =
         newImages.length > 0 || existingImages.length > 0;
 
+      // Check if standard image has changed
+      const standardImageChanged = originalStandardImage !== standardImage;
+
       await editPost(postId, {
         author: user._id || "",
         name,
@@ -316,7 +324,7 @@ export default function EditPostForm() {
         lastSeen: lastSeen ? new Date(lastSeen) : undefined,
         category: selectedCategory,
         location: location.name,
-        // Only send standardImage if we're using it and not uploading new images
+        // Send standardImage if we're using it
         standardImage: usingStandardImage ? standardImage : null,
         locationCoordinates: {
           type: "Point" as const,
@@ -326,10 +334,11 @@ export default function EditPostForm() {
         images: newImages.length ? newImages : undefined,
         imageOperations: {
           imagesToRemove: imagesToRemove,
-          // If we're switching from standard to uploaded images, replace all
-          replaceAllImages: usingUploadedImages && !usingStandardImage,
+          // Replace all images if switching types or if standard image changed
+          replaceAllImages: usingUploadedImages || standardImageChanged,
         },
       });
+
       toast.success("Postarea a fost actualizată");
       router.replace("/profile");
     } catch (err: unknown) {
@@ -767,13 +776,33 @@ export default function EditPostForm() {
                         }`}
                         onClick={() => {
                           if (isFormDisabled) return;
+
+                          // If we're changing from one standard image to another
+                          if (
+                            originalStandardImage &&
+                            standardImage !== imgUrl
+                          ) {
+                            // Add the old standard image to removal list if it's different
+                            if (originalStandardImage !== imgUrl) {
+                              setImagesToRemove((prev) => {
+                                const newList = [...prev];
+                                if (!newList.includes(originalStandardImage)) {
+                                  newList.push(originalStandardImage);
+                                }
+                                return newList;
+                              });
+                            }
+                          }
+
                           setStandardImage(imgUrl);
 
-                          // Add all existing images to the removal list if they exist
+                          // Add all existing regular images to the removal list if they exist
                           if (existingImages.length > 0) {
                             setImagesToRemove((prev) => [
                               ...prev,
-                              ...existingImages,
+                              ...existingImages.filter(
+                                (img) => !prev.includes(img)
+                              ),
                             ]);
                           }
 
@@ -799,9 +828,19 @@ export default function EditPostForm() {
                       type="button"
                       onClick={() => {
                         if (isFormDisabled) return;
+
+                        // If we're clearing a standard image, add it to removal list
+                        if (standardImage) {
+                          setImagesToRemove((prev) => {
+                            const newList = [...prev];
+                            if (!newList.includes(standardImage)) {
+                              newList.push(standardImage);
+                            }
+                            return newList;
+                          });
+                        }
+
                         setStandardImage(null);
-                        // When clearing standard image, you might want to reload original images
-                        // but that would require refetching the post data
                       }}
                       disabled={isFormDisabled}
                       className={styles.clearStandardImage}
@@ -812,7 +851,6 @@ export default function EditPostForm() {
                 </div>
               </div>
             </div>
-
             <div className={styles.postdatabox}>
               <div className={styles.inputbox}>
                 <p>

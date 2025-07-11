@@ -601,54 +601,64 @@ export default function CreatePostForm() {
                   </span>
                 </p>
                 <div className={styles.imageuploadbox}>
-                  <button
-                    type="button"
-                    className={styles.uploadbutton}
-                    onClick={() =>
-                      !isFormDisabled && fileInputRef.current?.click()
-                    }
-                    disabled={isFormDisabled}
-                  >
-                    Adaugă imagini <span>+</span>
-                  </button>
-                  <label htmlFor="images" className={styles.hidden}>
-                    Imagini
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id="images"
-                    name="images"
-                    multiple
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      if (isFormDisabled) return;
-                      const files = Array.from(e.target.files || []);
-                      const newValidImages: File[] = [];
-                      for (const file of files) {
-                        if (file.size > 5 * 1024 * 1024) {
-                          toast.error(
-                            `Imaginea "${file.name}" este mai mare de 5MB.`
-                          );
-                          continue;
-                        }
-                        if (images.length + newValidImages.length >= 5) {
-                          toast.error("Puteți adăuga maximum 5 imagini.");
-                          break;
-                        }
-                        newValidImages.push(file);
+                  <div className={styles.imagegrid}>
+                    <button
+                      type="button"
+                      className={styles.uploadbutton}
+                      onClick={() =>
+                        !isFormDisabled && fileInputRef.current?.click()
                       }
-                      if (newValidImages.length > 0) {
-                        setImages((prev) => [...prev, ...newValidImages]);
-                        setStandardImage(null);
-                        clearError("images");
-                      }
-                      e.target.value = "";
-                    }}
-                    aria-required="true"
-                    disabled={isFormDisabled}
-                  />
+                      disabled={isFormDisabled}
+                    >
+                      Încarcă imagini <span>+</span>
+                    </button>
+                    <label htmlFor="images" className={styles.hidden}>
+                      Imagini
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="images"
+                      name="images"
+                      multiple
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        if (isFormDisabled) return;
+                        const files = Array.from(e.target.files || []);
+                        const newValidImages: File[] = [];
+                        for (const file of files) {
+                          if (file.size > 5 * 1024 * 1024) {
+                            toast.error(
+                              `Imaginea "${file.name}" este mai mare de 5MB.`
+                            );
+                            continue;
+                          }
+                          if (images.length + newValidImages.length >= 5) {
+                            toast.error("Puteți adăuga maximum 5 imagini.");
+                            break;
+                          }
+                          newValidImages.push(file);
+                        }
+                        if (newValidImages.length > 0) {
+                          setImages((prev) => [...prev, ...newValidImages]);
+                          setStandardImage(null);
+                          clearError("images");
+                        }
+                        e.target.value = "";
+                      }}
+                      aria-required="true"
+                      disabled={isFormDisabled}
+                    />
+                    <h3>sau</h3>{" "}
+                    <button
+                      type="button"
+                      className={styles.uploadbutton}
+                      disabled={isFormDisabled}
+                    >
+                      Alege o imagine
+                    </button>
+                  </div>
                 </div>
                 <div className={styles.imagepreviewwrapper}>
                   {images.map((image, index) => {
