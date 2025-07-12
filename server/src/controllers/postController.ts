@@ -574,52 +574,85 @@ export async function getLatestPosts(
   res: Response
 ): Promise<void> {
   try {
-    const limit = parseInt(req.query.limit as string) || 12;
     const skip = parseInt(req.query.skip as string) || 0;
 
-    const promotedPosts = await Post.find({
-      status: { $ne: "solved" },
-      "promoted.isActive": true,
-      "promoted.expiresAt": { $gt: new Date() },
-    })
-      .select(
-        "title content images status category location createdAt lostfoundID promoted views lastSeen reward"
-      )
-      .sort({ createdAt: -1 })
-      .lean();
+    const getPostsByStatus = async (
+      status: string,
+      limit: number,
+      skipCount: number
+    ) => {
+      const promotedPosts = await Post.find({
+        status: status,
+        "promoted.isActive": true,
+        "promoted.expiresAt": { $gt: new Date() },
+      })
+        .select(
+          "title content images status category location createdAt lostfoundID promoted views lastSeen reward"
+        )
+        .sort({ createdAt: -1 })
+        .skip(skipCount)
+        .limit(limit)
+        .lean();
 
-    const promotedPostIds = promotedPosts.map((post) => post._id);
+      const promotedPostIds = promotedPosts.map((post) => post._id);
+      const remainingLimit = limit - promotedPosts.length;
+      const remainingSkip = Math.max(0, skipCount - promotedPosts.length);
 
-    const regularPosts = await Post.find({
-      status: { $ne: "solved" },
-      _id: { $nin: promotedPostIds },
-      $or: [
-        { "promoted.isActive": { $ne: true } },
-        { "promoted.expiresAt": { $lte: new Date() } },
-        { promoted: { $exists: false } },
-      ],
-    })
-      .select(
-        "title content images status category location createdAt lostfoundID promoted views lastSeen reward"
-      )
-      .sort({ createdAt: -1 })
-      .lean();
+      let regularPosts: any[] = [];
 
-    const allPosts = [...promotedPosts, ...regularPosts];
+      if (remainingLimit > 0) {
+        regularPosts = await Post.find({
+          status: status,
+          _id: { $nin: promotedPostIds },
+          $or: [
+            { "promoted.isActive": { $ne: true } },
+            { "promoted.expiresAt": { $lte: new Date() } },
+            { promoted: { $exists: false } },
+          ],
+        })
+          .select(
+            "title content images status category location createdAt lostfoundID promoted views lastSeen reward"
+          )
+          .sort({ createdAt: -1 })
+          .skip(remainingSkip)
+          .limit(remainingLimit)
+          .lean();
+      }
 
-    const paginatedPosts = allPosts.slice(skip, skip + limit);
+      return [...promotedPosts, ...regularPosts];
+    };
 
-    const totalCount = await Post.countDocuments({
-      status: { $ne: "solved" },
-    });
+    const postsPerStatus = 6;
+    const lostSkip = Math.floor(skip / 2);
+    const foundSkip = Math.floor(skip / 2);
+
+    const [lostPosts, foundPosts] = await Promise.all([
+      getPostsByStatus("lost", postsPerStatus, lostSkip),
+      getPostsByStatus("found", postsPerStatus, foundSkip),
+    ]);
+
+    const allPosts = [...lostPosts, ...foundPosts];
+
+    const [totalLostCount, totalFoundCount] = await Promise.all([
+      Post.countDocuments({ status: "lost" }),
+      Post.countDocuments({ status: "found" }),
+    ]);
+
+    const totalCount = totalLostCount + totalFoundCount;
+
+    const promotedCount = allPosts.filter(
+      (post) => post.promoted?.isActive && post.promoted?.expiresAt > new Date()
+    ).length;
 
     res.status(200).json({
       code: "LATEST_POSTS",
-      posts: paginatedPosts,
-      count: paginatedPosts.length,
+      posts: allPosts,
+      count: allPosts.length,
       totalCount,
-      hasMore: skip + paginatedPosts.length < totalCount,
-      promotedCount: promotedPosts.length,
+      hasMore: skip + allPosts.length < totalCount,
+      promotedCount,
+      lostCount: lostPosts.length,
+      foundCount: foundPosts.length,
     });
   } catch (error) {
     console.error("Error fetching latest posts:", error);
