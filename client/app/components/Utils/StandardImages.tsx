@@ -12,22 +12,22 @@ export const standardImagesList = [
   {
     idx: 3,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752182367/pasaport_uzkvld.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752181960/card-de-sanatate_xj4s0b.webp",
   },
   {
     idx: 4,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752277382/certificat-inmatriculare_btjb9t.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752182367/pasaport_uzkvld.webp",
   },
   {
     idx: 5,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752276697/carnet-de-elev_h9xtn4.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752277382/certificat-inmatriculare_btjb9t.webp",
   },
   {
     idx: 6,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752181960/card-de-sanatate_xj4s0b.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752276697/carnet-de-elev_h9xtn4.webp",
   },
   {
     idx: 7,
@@ -77,65 +77,75 @@ export const standardImagesList = [
   {
     idx: 16,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752182744/card-stb_lmwl5r.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752316432/card-social_fgzmaz.webp",
   },
   {
     idx: 17,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752274369/card-metrorex_roj7lf.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752182744/card-stb_lmwl5r.webp",
   },
   {
     idx: 18,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752270769/keys_qcvpvn.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752274369/card-metrorex_roj7lf.webp",
   },
   {
     idx: 19,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752271050/car-key_fhxox7.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752270769/keys_qcvpvn.webp",
   },
   {
     idx: 20,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752271766/wallet_kmug2n.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752271050/car-key_fhxox7.webp",
   },
   {
     idx: 21,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278180/portofel-femei_yiv9b5.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752271766/wallet_kmug2n.webp",
   },
   {
     idx: 22,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752280154/borseta_sg7uwp.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278180/portofel-femei_yiv9b5.webp",
   },
   {
     idx: 23,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752277588/verigheta_gdjfb8.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752280154/borseta_sg7uwp.webp",
   },
   {
     idx: 24,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278895/cercei_cm9peo.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752277588/verigheta_gdjfb8.webp",
   },
   {
     idx: 25,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278443/umbrela_le8ax7.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278895/cercei_cm9peo.webp",
   },
   {
     idx: 26,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278757/ochelari_ahaufx.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752317637/bratara-aur_lyi9hs.webp",
   },
   {
     idx: 27,
     imgUrl:
-      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278573/ochelari-de-soare_sfst06.webp",
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278443/umbrela_le8ax7.webp",
   },
   {
     idx: 28,
+    imgUrl:
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278757/ochelari_ahaufx.webp",
+  },
+  {
+    idx: 29,
+    imgUrl:
+      "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752278573/ochelari-de-soare_sfst06.webp",
+  },
+  {
+    idx: 30,
     imgUrl:
       "https://res.cloudinary.com/dqyq1oiwi/image/upload/v1752279956/usb-stick_qnuo3e.webp",
   },

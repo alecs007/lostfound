@@ -223,10 +223,14 @@
   border-radius: 8px;
   cursor: pointer;
   margin-top: 7px;
+  transition: transform 0.2s ease-in-out;
   span {
     margin-left: 10px;
     font-size: 1.3em;
     font-weight: 600;
+  }
+  &:active {
+    transform: scale(0.93);
   }
 }
 .categoriescontainer {

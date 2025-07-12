@@ -437,7 +437,7 @@ export default function SearchPage({ category, page }: SearchPageProps) {
             {category && (
               <div className={styles.categoryheader}>
                 <Image
-                  src={`/images/${category}-header.webp`}
+                  src={`/headers/${category}-header.webp`}
                   alt={`${category} header`}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
