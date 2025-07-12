@@ -15,7 +15,7 @@ interface ApiResponse {
 async function fetchLatestPosts(): Promise<Post[]> {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/post/latest?limit=12`,
+      `${process.env.NEXT_PUBLIC_API_URL}/post/latest?limit=20`,
       {
         next: { revalidate: 3 },
         /// 300
@@ -36,8 +36,8 @@ async function fetchLatestPosts(): Promise<Post[]> {
 
 export default async function AnunturiPromovate() {
   const posts = await fetchLatestPosts();
-  const firstHalf = posts.slice(0, 6);
-  const secondHalf = posts.slice(6, 12);
+  const firstHalf = posts.slice(0, 10);
+  const secondHalf = posts.slice(10, 20);
 
   return (
     <section className={styles.anunturipromovate}>

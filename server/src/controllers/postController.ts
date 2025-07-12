@@ -622,7 +622,7 @@ export async function getLatestPosts(
       return [...promotedPosts, ...regularPosts];
     };
 
-    const postsPerStatus = 6;
+    const postsPerStatus = 10;
     const lostSkip = Math.floor(skip / 2);
     const foundSkip = Math.floor(skip / 2);
 
