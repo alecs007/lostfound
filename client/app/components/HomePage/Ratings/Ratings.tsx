@@ -74,7 +74,7 @@ export default function Ratings() {
               </div>
               <div className={styles.text}>
                 Cățelușa mea a dispărut din curte, dar cineva a postat-o aici și
-                am reușit s-o aducem acasă în aceeași zi. Nici nu știu cum să vă
+                am reușit s-o aducem acasă în timp scurt. Nici nu știu cum să vă
                 mulțumesc!
               </div>
               <div className={styles.author}>
