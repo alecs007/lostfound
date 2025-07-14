@@ -12,8 +12,8 @@ export default function Header() {
           <Image
             src="/images/test-logo.webp"
             alt="Logo Icon"
-            width={90}
-            height={55}
+            width={95}
+            height={60}
             draggable={false}
             priority
           />
