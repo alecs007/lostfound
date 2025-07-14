@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .paper {
+        fill: #fff;
+        stroke: #2c3e60;
+        stroke-width: 3.5;
+      }
+      .line {
+        stroke: #2c3e60;
+        stroke-width: 3.5;
+        stroke-linecap: round;
+      }
+      .highlight {
+        stroke: #ffd700;
+        stroke-width: 3.5;
+        stroke-linecap: round;
+      }
+      .bookmark {
+        fill: #ffd700;
+      }
+    </style>
+  </defs>
+
+  <!-- Notebook background with rounded corners -->
+  <rect class="paper" x="10" y="8" width="44" height="48" rx="10" ry="10"/>
+
+  <!-- Top bookmark -->
+  <path class="bookmark" d="M44 8v12l-4-3-4 3V8h8z"/>
+
+  <!-- Text lines -->
+  <line class="line" x1="18" y1="24" x2="46" y2="24"/>
+  <line class="line" x1="18" y1="30" x2="46" y2="30"/>
+  <line class="line" x1="18" y1="36" x2="40" y2="36"/>
+  <line class="highlight" x1="18" y1="42" x2="34" y2="42"/>
+</svg>

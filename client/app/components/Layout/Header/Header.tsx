@@ -30,6 +30,16 @@ export default function Header() {
               draggable={false}
             />
             Despre noi
+          </Link>{" "}
+          <Link href="/" className={styles.link}>
+            <Image
+              src="/icons/notebook.svg"
+              alt="Notebook Icon"
+              width={23}
+              height={23}
+              draggable={false}
+            />
+            Blog
           </Link>
           <Link href="/search" className={styles.link}>
             <Image
