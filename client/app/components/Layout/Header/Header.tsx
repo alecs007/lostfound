@@ -86,8 +86,8 @@ export default function Header() {
               <Image
                 src="/icons/search-yellow.svg"
                 alt="Yellow Search Icon"
-                width={21}
-                height={21}
+                width={23}
+                height={23}
                 draggable={false}
               />
               Caută anunțuri
@@ -155,8 +155,8 @@ export default function Header() {
             <Image
               src="/icons/search-yellow.svg"
               alt="Yellow Search Icon"
-              width={24}
-              height={24}
+              width={25}
+              height={25}
               draggable={false}
             />
             Caută anunțuri
