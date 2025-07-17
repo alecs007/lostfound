@@ -26,17 +26,8 @@
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  h1 {
-    font-size: 3em;
-    font-weight: 800;
-    width: 15ch;
-    text-wrap: wrap;
-    text-align: center;
-    line-height: 1.2;
-    color: var(--blue);
-  }
   h2 {
-    font-size: 1.5em;
+    font-size: 1.65em;
     font-weight: 500;
     width: 25ch;
     text-wrap: wrap;
@@ -46,14 +37,14 @@
   }
 }
 .slogan {
-  width: clamp(300px, 95%, 500px);
+  width: clamp(300px, 100%, 500px);
   aspect-ratio: 16/5;
   position: relative;
 }
 .countbox {
   margin-top: 15px;
   padding: 15px;
-  width: 60%;
+  width: 70%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,14 +54,16 @@
   position: relative;
   // animation: slideBounce 1s ease-in-out;
   span {
-    font-size: 2.5em;
-    font-weight: 700;
+    font-size: 3em;
+    font-weight: 800;
+    // -webkit-text-stroke: 1px #2c3e6073;
+    letter-spacing: 2.5px;
     color: var(--blue);
     opacity: 0.9;
   }
   p {
     font-size: 1.2em;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--blue);
     opacity: 0.8;
   }
@@ -116,17 +109,15 @@
   }
   .text {
     width: 100%;
-    h1 {
-      font-size: 2.5em;
-    }
+
     h2 {
-      font-size: 1.28em;
+      font-size: 1.3em;
     }
   }
   .countbox {
     width: clamp(200px, 90%, 400px);
     span {
-      font-size: 2.2em;
+      font-size: 2.7em;
     }
     p {
       font-size: 1em;

@@ -36,8 +36,8 @@ export default function Hero() {
                 draggable={false}
               />
             </div>
-            <Counter end={370} duration={3000} />
-            <p>Cazuri încheiate cu succes</p>
+            <Counter end={1291} duration={3000} />
+            <p>Cazuri fericite și încă număram!</p>
           </div>
         </div>
         <div className={styles.input}>

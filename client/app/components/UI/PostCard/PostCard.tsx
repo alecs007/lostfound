@@ -2,6 +2,8 @@ import styles from "./PostCard.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { Post } from "@/types/Post";
+import ImageSlider from "../ImageSlider/ImageSlider";
+import PostCardWrapper from "../../Utils/PostCardWrapper";
 
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
@@ -29,17 +31,25 @@ export default function PostCard({
   priority?: boolean;
 }) {
   return (
-    <Link href={`/post/${post._id}`} className={styles.anunt}>
+    <PostCardWrapper postId={post._id}>
       <div className={styles.postimage}>
-        {post.images && (
-          <Image
-            src={post.images[0]}
-            alt={post.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            style={{ objectFit: "cover" }}
+        {post.images && post.images.length > 1 ? (
+          <ImageSlider
+            images={post.images}
+            title={post.title}
             priority={priority}
           />
+        ) : (
+          post.images && (
+            <Image
+              src={post.images[0]}
+              alt={post.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              style={{ objectFit: "cover" }}
+              priority={priority}
+            />
+          )
         )}
         {post.promoted.isActive && (
           <div className={styles.promotedbadge}>Promovat</div>
@@ -90,6 +100,6 @@ export default function PostCard({
           <span className={styles.postid}>{post.lostfoundID}</span>
         </div>
       </div>
-    </Link>
+    </PostCardWrapper>
   );
 }
