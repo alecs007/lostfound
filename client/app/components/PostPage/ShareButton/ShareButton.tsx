@@ -37,8 +37,8 @@ export default function ShareButton({
       <Image
         src="/icons/share.svg"
         alt="Share Icon"
-        width={20}
-        height={20}
+        width={22}
+        height={22}
         draggable={false}
       />
       <p>Distribuie</p>

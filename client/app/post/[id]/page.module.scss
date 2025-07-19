@@ -72,7 +72,7 @@
   background: rgba(119, 119, 119, 0.1);
 }
 .secbutton {
-  width: 23%;
+  width: 19%;
   height: 50px;
   border: none;
   border-radius: 5px;
@@ -81,19 +81,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   p {
+    display: none;
     width: 78px;
     font-size: 1.3em;
     font-weight: 600;
   }
 }
 .large {
+  p {
+    display: block;
+  }
   width: 50%;
 }
 .contact {
-  width: 50%;
+  width: 65%;
   height: 50px;
   border: none;
   border-radius: 5px;
@@ -235,8 +239,16 @@
   .content {
     width: 100%;
   }
+  .buttoncontainer {
+    gap: 8px;
+  }
+  .large {
+    p {
+      display: none;
+    }
+  }
   .contact {
-    width: 60%;
+    width: 70%;
   }
   .secbutton:not(.large) p {
     display: none;
