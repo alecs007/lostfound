@@ -29,6 +29,9 @@ const UserSettings = dynamic(() => import("../UserSettings/UserSettings"), {
     </div>
   ),
 });
+const SavedPosts = dynamic(() => import("../SavedPosts/SavedPosts"), {
+  ssr: false,
+});
 const ProfileImageModal = dynamic(
   () => import("../ProfileImageModal/ProfileImageModal"),
   { ssr: false }
@@ -211,10 +214,18 @@ export default function ProfilePage() {
                 className={activePage === "setari" ? styles.active : ""}
               >
                 Setări cont
+              </button>{" "}
+              <button
+                onClick={() => setActivePage("salvate")}
+                className={activePage === "salvate" ? styles.active : ""}
+              >
+                Salvate
               </button>
             </div>
+
             {activePage === "postari" && <UserPosts />}
             {activePage === "setari" && <UserSettings />}
+            {activePage === "salvate" && <SavedPosts />}
           </div>
         </section>
       </main>

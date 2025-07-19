@@ -1,6 +1,5 @@
 import styles from "./PostCard.module.scss";
 import Image from "next/image";
-import Link from "next/link";
 import { Post } from "@/types/Post";
 import ImageSlider from "../ImageSlider/ImageSlider";
 import PostCardWrapper from "../../Utils/PostCardWrapper";

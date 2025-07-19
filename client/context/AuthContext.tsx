@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "../types/User";
+import { Post } from "@/types/Post";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -44,6 +45,7 @@ interface AuthContextType {
   changeProfileImage: (image: File) => Promise<void>;
   savePost: (postId: string) => Promise<string>;
   removeSavedPost: (postId: string) => Promise<string>;
+  getUserSavedPosts: () => Promise<Post[] | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -412,6 +414,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return data.message;
   };
 
+  const getUserSavedPosts = async () => {
+    if (!accessToken.current) throw new Error("Not authenticated");
+
+    const res = await fetch(`${API_URL}/user/saved-posts`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken.current}`,
+      },
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      const err = {
+        message: data.message || data.error || "Get saved posts failed",
+        code: data.code || "UNKNOWN_ERROR",
+        errors: data.errors || null,
+      };
+      throw err;
+    }
+
+    return data.favorites;
+  };
+
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
@@ -456,6 +482,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         changeProfileImage,
         savePost,
         removeSavedPost,
+        getUserSavedPosts,
         loading,
       }}
     >

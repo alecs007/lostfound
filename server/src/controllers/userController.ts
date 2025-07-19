@@ -322,3 +322,27 @@ export async function removePost(req: Request, res: Response): Promise<void> {
     res.status(500).json({ message: "Internal server error" });
   }
 }
+
+export async function getUserSavedPosts(req: Request, res: Response) {
+  try {
+    const user = await User.findById(req.user?.id)
+      .select("favoritePosts")
+      .populate({
+        path: "favoritePosts",
+        model: "Post",
+        select: "-__v",
+      });
+
+    if (!user) {
+      res.status(404).json({ message: "Utilizatorul nu a fost găsit" });
+      return;
+    }
+
+    res.json({
+      favorites: user.favoritePosts || [],
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}

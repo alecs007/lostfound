@@ -8,6 +8,7 @@ import {
   changeProfileImage,
   savePost,
   removePost,
+  getUserSavedPosts,
 } from "../controllers/userController";
 import { validate } from "../middleware/validate";
 import {
@@ -100,6 +101,7 @@ router.put(
   imageUpload.single("image"),
   changeProfileImage
 );
+router.get("/saved-posts", authenticate, getUserSavedPosts);
 router.post("/save-post", savePostLimiter, authenticate, savePost);
 router.post("/remove-post", savePostLimiter, authenticate, removePost);
 

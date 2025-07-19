@@ -1,5 +1,5 @@
 .anunt {
-  width: clamp(350px, 32%, 450px);
+  width: clamp(325px, 32%, 450px);
   aspect-ratio: 7/8;
   border-radius: 5px;
   box-shadow: rgba(14, 30, 37, 0.1) 0px 2px 4px 0px,
@@ -12,6 +12,8 @@
   color: var(--blue);
   overflow: hidden;
   transition: all 0.3s ease;
+  container-type: inline-size;
+  container-name: anunt;
 }
 
 .anunt:hover {
@@ -24,7 +26,6 @@
   width: 100%;
   aspect-ratio: 16/9;
   background: #f8f9fa;
-
   img {
     width: 100%;
     height: 100%;
@@ -153,7 +154,33 @@
   .anunt {
     width: clamp(300px, 48%, 450px);
   }
+  .postdescription {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+  }
+  .location {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+  }
+}
 
+@media screen and (max-width: 600px) {
+  .anunt {
+    width: clamp(300px, 100%, 400px);
+  }
+}
+
+@container anunt (max-width: 350px) {
   .postdescription {
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -172,11 +199,5 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .anunt {
-    width: clamp(300px, 100%, 400px);
   }
 }
