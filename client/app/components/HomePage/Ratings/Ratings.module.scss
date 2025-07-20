@@ -66,23 +66,33 @@
     font-weight: 600;
     transition: all 0.3s ease;
     min-width: 50px;
+    user-select: none;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--blue);
       color: white;
       border-color: var(--blue);
       transform: translateY(-2px);
     }
 
-    &:active {
+    &:active:not(:disabled) {
       transform: translateY(0);
     }
 
-    &:disabled {
+    &:disabled,
+    &.disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+      pointer-events: none;
+
+      &:hover {
+        background-color: #f8f9fa;
+        color: var(--blue);
+        border-color: #e9ecef;
+        transform: none;
+      }
     }
   }
 }

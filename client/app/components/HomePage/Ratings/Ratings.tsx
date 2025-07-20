@@ -7,12 +7,36 @@ import { Navigation, FreeMode } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/free-mode";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import UserLink from "../../PostPage/UserLink/UserLink";
 import Image from "next/image";
 
 export default function Ratings() {
   const swiperRef = useRef<SwiperType>(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+
+  const updateNavigationState = (swiper: SwiperType) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
+  };
+
+  const handleSwiper = (swiper: SwiperType) => {
+    swiperRef.current = swiper;
+    updateNavigationState(swiper);
+  };
+
+  const handlePrevClick = () => {
+    if (swiperRef.current && !isBeginning) {
+      swiperRef.current.slidePrev();
+    }
+  };
+
+  const handleNextClick = () => {
+    if (swiperRef.current && !isEnd) {
+      swiperRef.current.slideNext();
+    }
+  };
 
   return (
     <section className={styles.ratings}>
@@ -21,14 +45,18 @@ export default function Ratings() {
           <h2>Testimoniale</h2>
           <div className={styles.sliderbuttons}>
             <button
-              onClick={() => swiperRef.current?.slidePrev()}
-              className={styles.navbutton}
+              onClick={handlePrevClick}
+              className={`${styles.navbutton} ${
+                isBeginning ? styles.disabled : ""
+              }`}
+              disabled={isBeginning}
             >
               &#171;
             </button>
             <button
-              onClick={() => swiperRef.current?.slideNext()}
-              className={styles.navbutton}
+              onClick={handleNextClick}
+              className={`${styles.navbutton} ${isEnd ? styles.disabled : ""}`}
+              disabled={isEnd}
             >
               &#187;
             </button>
@@ -40,7 +68,10 @@ export default function Ratings() {
           slidesPerView="auto"
           freeMode={true}
           grabCursor={true}
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          onSwiper={handleSwiper}
+          onSlideChange={updateNavigationState}
+          onTransitionEnd={updateNavigationState}
+          onTouchEnd={updateNavigationState}
           navigation={false}
           loop={false}
           watchSlidesProgress={true}
