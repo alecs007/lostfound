@@ -37,7 +37,7 @@
   }
 }
 .slogan {
-  width: clamp(300px, 100%, 500px);
+  width: clamp(300px, 100%, 570px);
   aspect-ratio: 16/5;
   position: relative;
 }
@@ -111,11 +111,11 @@
     width: 100%;
 
     h2 {
-      font-size: 1.3em;
+      font-size: clamp(1.3em, 4vw, 1.8em);
     }
   }
   .countbox {
-    width: clamp(200px, 90%, 400px);
+    width: clamp(200px, 90%, 500px);
     span {
       font-size: 2.7em;
     }
@@ -124,7 +124,7 @@
     }
   }
   .input {
-    width: clamp(200px, 100%, 500px);
+    width: clamp(200px, 100%, 600px);
     padding: 10px;
   }
 }

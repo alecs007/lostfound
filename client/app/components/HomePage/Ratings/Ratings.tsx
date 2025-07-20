@@ -143,7 +143,7 @@ export default function Ratings() {
                 ))}
               </div>
               <div className={styles.text}>
-                Fiica mea și-a uitat rucsacul la școală. Cineva l-a găsit și a
+                Fiica mea și-a uitat rucsacul la școală. Un domn l-a găsit și a
                 folosit platforma să ne anunțe. L-am luat înapoi chiar în
                 aceeași zi. Mulțumim mult!
               </div>
