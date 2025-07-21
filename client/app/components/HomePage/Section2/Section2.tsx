@@ -25,51 +25,61 @@ export default function Section2() {
             <Image
               src="/icons/search-yellow2.svg"
               alt="Search Icon"
-              width={21}
-              height={21}
+              width={20}
+              height={20}
               draggable={false}
             />
-            <p>Publică postarea în cea mai mare bază de date din țară</p>
+            <p>
+              Publică postarea în <b>cea mai mare bază de date</b> din țară
+            </p>
           </div>
           <div className={styles.advantage}>
             <Image
               src="/icons/stocks.svg"
               alt="Stocks Icon"
-              width={21}
-              height={21}
+              width={20}
+              height={20}
               draggable={false}
             />
-            <p>Mărește-ți șansele de a-ți recupera bunul pierdut</p>
+            <p>
+              Mărește-ți șansele de a-ți <b>recupera bunul pierdut</b>
+            </p>
           </div>
           <div className={styles.advantage}>
             <Image
-              src="/icons/email-yellow.svg"
+              src="/icons/email-sent.svg"
               alt="Email Icon"
-              width={21}
-              height={21}
+              width={20}
+              height={20}
               draggable={false}
             />
-            <p>Anunță membrii echipei Crew din apropierea ta</p>
+            <p>
+              Anunță <b>membrii echipei Crew</b> din apropierea ta
+            </p>
           </div>
           <div className={styles.advantage}>
             <Image
               src="/icons/print-yellow.svg"
               alt="Print Icon"
-              width={21}
-              height={21}
+              width={20}
+              height={20}
               draggable={false}
             />
-            <p>Printează afișe cu QR Code direct către postarea ta</p>
+            <p>
+              Printează <b>afișe cu QR Code</b> direct către postarea ta
+            </p>
           </div>
           <div className={styles.advantage}>
             <Image
               src="/icons/megaphone.svg"
               alt="Megaphone Icon"
-              width={21}
-              height={21}
+              width={20}
+              height={20}
               draggable={false}
             />
-            <p>Răspândește vestea către mii de oameni din România</p>
+            <p>
+              Răspândește vestea către <b>mii de oameni</b> din România
+            </p>
           </div>
         </div>
       </div>

@@ -15,10 +15,8 @@ export default function JoinCrew() {
       </div>
       <div className={styles.box}>
         <h3>
-          <span className={styles.yellow}>lost</span> &{" "}
-          <span className={styles.yellow}>found</span> Crew este o echipă de
-          voluntari, iubitori de animale, oameni dornici să îi ajute pe cei
-          aflați în nevoie.
+          <b>Lost & Found Crew </b>este o echipă de voluntari, iubitori de
+          animale, oameni dornici să îi ajute pe cei aflați în nevoie.
         </h3>
         <br></br>
         {/* <h3>
@@ -27,12 +25,12 @@ export default function JoinCrew() {
         </h3> */}
         <h3>
           Echipa noastră crește în fiecare zi, iar oameni ca tine sunt mereu
-          bineveniți să se alăture!
+          bineveniți să se <b>alăture!</b>
         </h3>
         <br></br>
         <h3>
           Vei fi notificat în momentul în care apare un anunț în zona ta.
-          Împreună putem face lumea un loc mai bun.
+          <b> Împreună putem face lumea un loc mai bun</b>.
         </h3>
         <div className={styles.buttonbox}>
           <button>Alătură-te echipei</button>
