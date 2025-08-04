@@ -17,6 +17,7 @@
   }
   input:disabled {
     background: var(--white);
+    opacity: 1;
   }
   input::placeholder {
     color: var(--blue);

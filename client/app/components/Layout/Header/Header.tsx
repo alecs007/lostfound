@@ -51,17 +51,17 @@ export default function Header() {
 
           <Link href="/" className={styles.logo}>
             <Image
-              src="/images/test-logo.webp"
+              src="/images/lostfound_logo.webp"
               alt="Logo Icon"
-              width={95}
-              height={60}
+              width={75}
+              height={45}
               draggable={false}
               priority
             />
           </Link>
         </div>
         <div className={styles.box}>
-          <div className={styles.links}>
+          <nav className={styles.links}>
             <Link href="/" className={styles.link}>
               <Image
                 src="/icons/about.svg"
@@ -112,7 +112,7 @@ export default function Header() {
               />
               Lost & Found Crew
             </Link>
-          </div>
+          </nav>
           <Link href="/create-post">
             <button
               className={styles.button}
@@ -126,7 +126,7 @@ export default function Header() {
         </div>
       </div>
 
-      <div
+      <nav
         className={`${styles.extendedmenu} ${isOpen ? styles.open : ""}`}
         ref={menuRef}
       >
@@ -190,7 +190,7 @@ export default function Header() {
             Lost & Found Crew
           </Link>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
