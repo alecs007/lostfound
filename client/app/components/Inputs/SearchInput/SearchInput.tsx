@@ -43,8 +43,8 @@ export default function SearchInput({
   hideSubmitButton = false,
   onSubmit,
   category,
-  postsCount = 1021,
-}: SearchInputProps) {
+}: // postsCount = 1021,
+SearchInputProps) {
   const router = useRouter();
 
   const [internalQuery, setInternalQuery] = useState("");

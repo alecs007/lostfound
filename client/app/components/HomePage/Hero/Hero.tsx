@@ -41,14 +41,14 @@ export default function Hero() {
           </div>
         </div>
         <div className={styles.input}>
-          <div className={styles.adcontainer}>
+          {/* <div className={styles.adcontainer}>
             <Image
               src="/images/publicitate.png"
               alt="Publicitate"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-          </div>
+          </div> */}
           <SearchInput />
         </div>
       </div>

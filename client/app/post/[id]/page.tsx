@@ -186,10 +186,10 @@ export default async function PostPage({ params }: PageProps) {
                 <br />
               </React.Fragment>
             ))}{" "}
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum,
+            {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum,
             perferendis iure quos minus error consequuntur facilis aliquid vel
             inventore, distinctio laborum culpa beatae nemo voluptas repellat
-            reprehenderit fugit? Aliquam, sit?
+            reprehenderit fugit? Aliquam, sit? */}
           </p>{" "}
           <div className={styles.detailbox}>
             <p>LostFound ID</p>
