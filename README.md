@@ -454,9 +454,9 @@ Rate limiting on the geocoding endpoint (60/min) ensures compliance with Nominat
 ## Mobile Responsive Design
 
 <div align="center">
-  <img src="https://res.cloudinary.com/dqyq1oiwi/image/upload/v1758396413/localhost_3000__iPhone_XR_zmjobt.png" alt="Mobile Homepage" width="30%">
-  <img src="https://res.cloudinary.com/dqyq1oiwi/image/upload/v1758396413/localhost_3000__iPhone_XR_2_n2645d.png" alt="Mobile Post" width="30%">
-  <img src="https://res.cloudinary.com/dqyq1oiwi/image/upload/v1758396634/localhost_3000__iPhone_XR_3_cxnbtp.png" alt="Mobile Map" width="30%">
+  <img src="https://res.cloudinary.com/dqyq1oiwi/image/upload/v1758396413/localhost_3000__iPhone_XR_zmjobt.png" alt="Mobile Homepage" width="32%">
+  <img src="https://res.cloudinary.com/dqyq1oiwi/image/upload/v1758396413/localhost_3000__iPhone_XR_2_n2645d.png" alt="Mobile Post" width="32%">
+  <img src="https://res.cloudinary.com/dqyq1oiwi/image/upload/v1758396634/localhost_3000__iPhone_XR_3_cxnbtp.png" alt="Mobile Map" width="32%">
 </div>
 
 Fully responsive design with touch-optimized map controls, collapsible filters, and mobile-first form layouts. CSS Grid and Flexbox ensure consistent layouts across devices. Breakpoints at 768px and 1024px accommodate tablets and desktops.
@@ -581,5 +581,5 @@ The interface prioritizes clarity and accessibility with a warm color palette th
   ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
   ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
   
-  <p><strong>License:</strong> MIT | <strong>Developer:</strong> Alex Rotar</p>
+  <p><strong>License:</strong> MIT | <strong>Developer:</strong> Alexandru Rotar</p>
 </div>
